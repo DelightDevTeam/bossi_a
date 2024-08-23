@@ -24,7 +24,7 @@ class AgentResource extends JsonResource
             'line_id' => $this->line_id
         ];
 
-        $result = ['agent' => $agent, 'banks' => $this->bank];
+        $result = ['agent' => $agent, 'banks' => $this->banks];
 
         return $result;
     }
