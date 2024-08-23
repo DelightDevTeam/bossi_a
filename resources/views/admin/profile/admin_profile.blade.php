@@ -20,22 +20,6 @@
                             <label class="form-label">Phone No</label>
                             <input type="text" class="form-control" name="phone" value="{{$user->phone}}">
                         </div>
-                        <div class="custom-form-group">
-                            <label class="form-label">PaymentType</label>
-                            <select name="payment_type_id" id="">
-                                @foreach($paymentTypes as $paymentType)
-                                <option value="{{$paymentType->id}}" {{$paymentType->id == $user->payment_type_id ? 'selected' : ''}}>{{$paymentType->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="input-group input-group-outline my-4">
-                            <label class="form-label">Account Name</label>
-                            <input type="text" class="form-control" name="account_name" value="{{$user->account_name}}">
-                        </div>
-                        <div class="input-group input-group-outline my-4">
-                            <label class="form-label">Account Number</label>
-                            <input type="text" class="form-control" name="account_number" value="{{$user->account_number}}">
-                        </div>
                         <button class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0" type="submit">Update</button>
                     </form>
                 </div>

@@ -35,10 +35,7 @@ class UsersTableSeeder extends Seeder
             'status' => 1,
             'referral_code' => $referral_code,
             'is_changed_password' => 1,
-            'type' => $type->value,
-            'payment_type_id' => 1,
-            'account_name' => 'Test',
-            'account_number' => '3498787787'
+            'type' => $type->value
         ]);
     }
 }

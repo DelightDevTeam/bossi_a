@@ -88,9 +88,6 @@ Route::group(['middleware' => ['auth:sanctum', 'checkBanned']], function () {
         Route::get('player-transactionlog', [PlayerTransactionLogController::class, 'index']);
     });
 
-    Route::group(['prefix' => 'bank'], function () {
-        Route::get('all', [BankController::class, 'all']);
-    });
     Route::group(['prefix' => 'game'], function () {
         Route::post('Seamless/LaunchGame', [LaunchGameController::class, 'launchGame']);
         Route::get('gamelist/{provider_id}/{game_type_id}', [GameController::class, 'gameList']);

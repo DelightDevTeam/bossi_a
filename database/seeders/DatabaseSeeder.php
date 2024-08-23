@@ -64,7 +64,8 @@ class DatabaseSeeder extends Seeder
             GamingWorldTablesSeeder::class,
             YesGetRichTablesSeeder::class,
             Live22SMTablesSeeder::class,
-            BannerAdsSeeder::class
+            BannerAdsSeeder::class,
+            BankTableSeeder::class,
         ]);
 
     }

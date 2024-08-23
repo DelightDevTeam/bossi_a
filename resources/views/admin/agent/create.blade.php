@@ -134,7 +134,7 @@
               @enderror
             </div>
             <div class="custom-form-group">
-              <label for="title">Phone No</label>
+              <label for="title">Phone No<span class="text-danger">*</span></label>
               <input type="text"  name="phone" class="form-control" value="{{old('phone')}}" placeholder="Enter Phone Number">
               @error('phone')
               <span class="text-danger d-block">*{{ $message }}</span>
@@ -147,32 +147,6 @@
                   <span class="text-danger d-block">*{{ $message }}</span>
                   @enderror
               </div>
-            <div class="custom-form-group">
-                <label for="title">Payment Type <span class="text-danger">*</span></label>
-                <select name="payment_type_id" id="">
-                    <option value="">Select Payment Type</option>
-                    @foreach($paymentTypes as $paymentType)
-                        <option value="{{$paymentType->id}}">{{$paymentType->name}}</option>
-                    @endforeach
-                </select>
-                @error('payment_type_id')
-                <span class="text-danger d-block">*{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="custom-form-group">
-                <label for="title">Account Name <span class="text-danger">*</span></label>
-                <input type="text"  name="account_name" class="form-control" value="{{old('account_name')}}" placeholder="Enter Bank Account Name">
-                @error('account_name')
-                 <span class="text-danger d-block">*{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="custom-form-group">
-                <label for="title">Account Number <span class="text-danger">*</span></label>
-                <input type="text"  name="account_number" class="form-control" value="{{old('account_number')}}" placeholder="Enter Bank Account Number">
-                @error('account_number')
-                <span class="text-danger d-block">*{{ $message }}</span>
-                @enderror
-            </div>
              <div class="custom-form-group">
               <label for="title">Agent Site Logo Image</label>
               <input type="file" class="form-control" id="" name="agent_logo">

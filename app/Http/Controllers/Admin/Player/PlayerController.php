@@ -76,9 +76,8 @@ class PlayerController extends Controller
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
         $player_name = $this->generateRandomString();
-        $paymentTypes = PaymentType::all();
 
-        return view('admin.player.create', compact('player_name', 'paymentTypes'));
+        return view('admin.player.create', compact('player_name'));
     }
 
     /**
@@ -87,37 +86,34 @@ class PlayerController extends Controller
     public function store(PlayerRequest $request)
     {
         Gate::allows('player_store');
-    
+
         $agent = Auth::user();
         $inputs = $request->validated();
-    
+
         if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
             return redirect()->back()->with('error', 'This phone number already exists');
         }
-    
+
         try {
             if (isset($inputs['amount']) && $inputs['amount'] > $agent->balanceFloat) {
                 throw new \Exception('Insufficient balance for transfer.');
             }
-    
+
             $user = User::create([
                 'name' => $inputs['name'],
                 'user_name' => $inputs['user_name'],
                 'password' => Hash::make($inputs['password']),
                 'phone' => $inputs['phone'],
-                'payment_type_id' => $inputs['payment_type_id'],
-                'account_name' => $inputs['account_name'],
-                'account_number' => $inputs['account_number'],
                 'agent_id' => $agent->id,
                 'type' => UserType::Player,
             ]);
-    
+
             $user->roles()->sync(self::PLAYER_ROLE);
-    
+
             if (isset($inputs['amount'])) {
                 app(WalletService::class)->transfer($agent, $user, $inputs['amount'], TransactionName::CreditTransfer);
             }
-    
+
             return redirect()->back()
                 ->with('success', 'Player created successfully')
                 ->with('url', env('APP_URL'))
@@ -125,11 +121,11 @@ class PlayerController extends Controller
                 ->with('username', $user->user_name);
         } catch (\Exception $e) {
             Log::error('Error creating user: ' . $e->getMessage());
-    
+
             return redirect()->back()->with('error', 'An error occurred while creating the player.');
         }
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -157,9 +153,8 @@ class PlayerController extends Controller
             Response::HTTP_FORBIDDEN,
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
-        $paymentTypes = PaymentType::all();
 
-        return response()->view('admin.player.edit', compact('player', 'paymentTypes'));
+        return response()->view('admin.player.edit', compact('player'));
     }
 
     /**

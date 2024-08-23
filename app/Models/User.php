@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Admin\Bank;
 use App\Models\Report;
 use App\Enums\UserType;
 use App\Models\Admin\Role;
 use App\Events\UserCreatedEvent;
 use App\Models\Admin\Permission;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\SeamlessTransaction;
 use Bavix\Wallet\Interfaces\Wallet;
@@ -43,9 +47,6 @@ class User extends Authenticatable implements Wallet
         'is_changed_password',
         'referral_code',
         'agent_logo',
-        'payment_type_id',
-        'account_number',
-        'account_name',
         'line_id',
         'commission'
     ];
@@ -184,13 +185,13 @@ class User extends Authenticatable implements Wallet
         return $this->belongsTo(User::class, 'agent_id');
     }
 
-    public  function paymentType()
-    {
-        return $this->belongsTo(PaymentType::class,'payment_type_id');
-    }
-
-      public function reports()
+    public function reports()
     {
         return $this->hasMany(Report::class, 'agent_id');
+    }
+
+    public function banks(): HasMany
+    {
+        return $this->hasMany(Bank::class, 'agent_id');
     }
 }

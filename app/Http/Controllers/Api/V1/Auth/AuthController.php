@@ -64,16 +64,11 @@ class AuthController extends Controller
             return $this->error('', 'Already Exist Account for this number', 401);
         }
 
-        $inputs = $request->validated();
-
         $user = User::create([
             'phone' => $request->phone,
             'name' => $request->name,
             'user_name' => $this->generateRandomString(),
-            'password' => Hash::make($inputs['password']),
-            'payment_type_id' => $request->payment_type_id,
-            'account_name' => $request->account_name,
-            'account_number' => $request->account_number,
+            'password' => Hash::make($request->password),
             'agent_id' => $agent->id,
             'type' => UserType::Player,
         ]);

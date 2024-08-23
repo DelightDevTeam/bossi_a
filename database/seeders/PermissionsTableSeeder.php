@@ -25,56 +25,6 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'permission_index',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'permission_create',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'permission_edit',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'permission_show',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'permission_delete',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'role_index',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'role_create',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'role_edit',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'role_show',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'role_delete',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'title' => 'player_access',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -90,22 +40,7 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'player_store',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'title' => 'player_edit',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_update',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_show',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -125,22 +60,7 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'agent_store',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'title' => 'agent_edit',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_update',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_show',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

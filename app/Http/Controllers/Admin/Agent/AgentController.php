@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin\Agent;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Enums\UserType;
-use App\Models\PaymentType;
-use Illuminate\Http\Request;
 use App\Enums\TransactionName;
 use App\Enums\TransactionType;
-use App\Services\WalletService;
-use App\Models\Admin\TransferLog;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\AgentRequest;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AgentRequest;
+use App\Http\Requests\TransferLogRequest;
+use App\Models\Admin\TransferLog;
+use App\Models\PaymentType;
+use App\Models\User;
+use App\Services\WalletService;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\TransferLogRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,13 +32,12 @@ class AgentController extends Controller
      */
     private const AGENT_ROLE = 2;
 
-    public function index()
+    public function index(): View
     {
-        abort_if(
-            Gate::denies('agent_index'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('agent_index')) {
+            abort(403);
+        }
+
         //kzt
         $users = User::with('roles')
             ->whereHas('roles', function ($query) {
@@ -53,13 +54,12 @@ class AgentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        abort_if(
-            Gate::denies('agent_create'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('agent_create')) {
+            abort(403);
+        }
+
         $agent_name = $this->generateRandomString();
         $referral_code = $this->generateReferralCode();
         $paymentTypes = PaymentType::all();
@@ -69,14 +69,15 @@ class AgentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @throws ValidationException
      */
-    public function store(AgentRequest $request)
+    public function store(AgentRequest $request): RedirectResponse
     {
-        abort_if(
-            Gate::denies('agent_store'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('agent_create')) {
+            abort(403);
+        }
+
         $master = Auth::user();
         $inputs = $request->validated();
 
@@ -96,12 +97,12 @@ class AgentController extends Controller
         );
 
         if ($request->hasFile('agent_logo')) {
-        $image = $request->file('agent_logo');
-        $ext = $image->getClientOriginalExtension();
-        $filename = uniqid('logo_') . '.' . $ext;
-        $image->move(public_path('assets/img/sitelogo/'), $filename);
-        $userPrepare['agent_logo'] = $filename;
-    }
+            $image = $request->file('agent_logo');
+            $ext = $image->getClientOriginalExtension();
+            $filename = uniqid('logo_').'.'.$ext;
+            $image->move(public_path('assets/img/sitelogo/'), $filename);
+            $userPrepare['agent_logo'] = $filename;
+        }
 
         $agent = User::create($userPrepare);
         $agent->roles()->sync(self::AGENT_ROLE);
@@ -118,31 +119,13 @@ class AgentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        abort_if(
-            Gate::denies('agent_show'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
-        $user_detail = User::find($id);
-
-        return view('admin.agent.show', compact('user_detail'));
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        abort_if(
-            Gate::denies('agent_edit') || ! $this->ifChildOfParent(request()->user()->id, $id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('agent_edit')) {
+            abort(403);
+        }
 
         $agent = User::find($id);
         $paymentTypes = PaymentType::all();
@@ -153,21 +136,22 @@ class AgentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
+        if (! Gate::allows('agent_edit')) {
+            abort(403);
+        }
+
         $param = $request->validate([
             'name' => 'required|string',
-            'phone' => ['nullable', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'unique:users,phone,'.$id],
-            'payment_type_id' => 'required|exists:payment_types,id',
-            'account_number' => 'required|string',
-            'account_name' => 'required|string',
+            'phone' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'unique:users,phone,'.$id],
             'line_id' => 'nullable',
-            'commission' => 'nullable'
+            'commission' => 'nullable',
         ]);
 
         $user = User::find($id);
-        if($request->file('agent_logo'))
-        {
+
+        if ($request->file('agent_logo')) {
             File::delete(public_path('assets/img/sitelogo/'.$user->agent_logo));
             $image = $request->file('agent_logo');
             $ext = $image->getClientOriginalExtension();
@@ -185,41 +169,32 @@ class AgentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function getCashIn(string $id)
+    public function getCashIn(string $id): View
     {
-        abort_if(
-            Gate::denies('make_transfer'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
+        if (! Gate::allows('make_transfer')) {
+            abort(403);
+        }
         $agent = User::find($id);
 
         return view('admin.agent.cash_in', compact('agent'));
     }
 
-    public function getCashOut(string $id)
+    public function getCashOut(string $id): View
     {
-        abort_if(
-            Gate::denies('make_transfer'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
+        if (! Gate::allows('make_transfer')) {
+            abort(403);
+        }
         // Assuming $id is the user ID
         $agent = User::findOrFail($id);
 
         return view('admin.agent.cash_out', compact('agent'));
     }
 
-    public function makeCashIn(TransferLogRequest $request, $id)
+    public function makeCashIn(TransferLogRequest $request, $id): RedirectResponse
     {
-
-        abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('make_transfer')) {
+            abort(403);
+        }
 
         try {
             $inputs = $request->validated();
@@ -242,14 +217,11 @@ class AgentController extends Controller
         }
     }
 
-    public function makeCashOut(TransferLogRequest $request, string $id)
+    public function makeCashOut(TransferLogRequest $request, string $id): RedirectResponse
     {
-
-        abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (! Gate::allows('make_transfer')) {
+            abort(403);
+        }
 
         try {
             $inputs = $request->validated();
@@ -278,7 +250,6 @@ class AgentController extends Controller
         return redirect()->back()->with('success', 'Money fill request submitted successfully!');
     }
 
-
     public function getTransferDetail($id)
     {
         abort_if(
@@ -300,14 +271,8 @@ class AgentController extends Controller
         return 'LKM'.$randomNumber;
     }
 
-    public function banAgent($id)
+    public function banAgent($id): RedirectResponse
     {
-        abort_if(
-            ! $this->ifChildOfParent(request()->user()->id, $id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
         $user = User::find($id);
         $user->update(['status' => $user->status == 1 ? 0 : 1]);
         if (Auth::check() && Auth::id() == $id) {
@@ -356,7 +321,8 @@ class AgentController extends Controller
             ->with('username', $agent->user_name);
     }
 
-    private function generateReferralCode($length = 8) {
+    private function generateReferralCode($length = 8)
+    {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
@@ -368,57 +334,57 @@ class AgentController extends Controller
         return $randomString;
     }
 
-
     public function showAgentLogin($id)
     {
         $agent = User::findOrFail($id);
+
         return view('auth.agent_login', compact('agent'));
     }
 
     public function AgentToPlayerDepositLog()
-{
-    $transactions = DB::table('transactions')
-        ->join('users as players', 'players.id', '=', 'transactions.payable_id')
-        ->join('users as agents', 'agents.id', '=', 'players.agent_id')
-        ->where('transactions.type', 'deposit')
-        ->where('transactions.name', 'credit_transfer')
-        ->where('agents.id', '<>', 1) // Exclude agent_id 1
-        ->groupBy('agents.id', 'players.id','agents.name','players.name','agents.commission')
-        ->select(
-            'agents.id as agent_id',
-            'agents.name as agent_name',
-            'players.id as player_id',
-            'players.name as player_name',
-            'agents.commission as agent_commission', // Get the commission percentage
-            DB::raw('count(transactions.id) as total_deposits'),
-            DB::raw('sum(transactions.amount) as total_amount')
-        )
-        ->get();
+    {
+        $transactions = DB::table('transactions')
+            ->join('users as players', 'players.id', '=', 'transactions.payable_id')
+            ->join('users as agents', 'agents.id', '=', 'players.agent_id')
+            ->where('transactions.type', 'deposit')
+            ->where('transactions.name', 'credit_transfer')
+            ->where('agents.id', '<>', 1) // Exclude agent_id 1
+            ->groupBy('agents.id', 'players.id', 'agents.name', 'players.name', 'agents.commission')
+            ->select(
+                'agents.id as agent_id',
+                'agents.name as agent_name',
+                'players.id as player_id',
+                'players.name as player_name',
+                'agents.commission as agent_commission', // Get the commission percentage
+                DB::raw('count(transactions.id) as total_deposits'),
+                DB::raw('sum(transactions.amount) as total_amount')
+            )
+            ->get();
 
-    return view('admin.agent.agent_to_play_dep_log', compact('transactions'));
-}
+        return view('admin.agent.agent_to_play_dep_log', compact('transactions'));
+    }
 
     public function AgentToPlayerDetail($agent_id, $player_id)
-{
-    // Retrieve detailed information about the agent and player
-    $transactionDetails = DB::table('transactions')
-        ->join('users as players', 'players.id', '=', 'transactions.payable_id')
-        ->join('users as agents', 'agents.id', '=', 'players.agent_id')
-        ->where('agents.id', $agent_id)
-        ->where('players.id', $player_id)
-        ->where('transactions.type', 'deposit')
-        ->where('transactions.name', 'credit_transfer')
-        ->select(
-            'agents.name as agent_name',
-            'players.name as player_name',
-            'transactions.amount',
-            'transactions.created_at',
-            'agents.commission as agent_commission'
-        )
-        ->get();
+    {
+        // Retrieve detailed information about the agent and player
+        $transactionDetails = DB::table('transactions')
+            ->join('users as players', 'players.id', '=', 'transactions.payable_id')
+            ->join('users as agents', 'agents.id', '=', 'players.agent_id')
+            ->where('agents.id', $agent_id)
+            ->where('players.id', $player_id)
+            ->where('transactions.type', 'deposit')
+            ->where('transactions.name', 'credit_transfer')
+            ->select(
+                'agents.name as agent_name',
+                'players.name as player_name',
+                'transactions.amount',
+                'transactions.created_at',
+                'agents.commission as agent_commission'
+            )
+            ->get();
 
-    return view('admin.agent.agent_to_player_detail', compact('transactionDetails'));
-}
+        return view('admin.agent.agent_to_player_detail', compact('transactionDetails'));
+    }
 
     // public function AgentWinLoseReport()
     // {
@@ -484,113 +450,109 @@ class AgentController extends Controller
         return view('admin.agent.agent_report_index', compact('agentReports'));
     }
 
-
     public function AgentWinLoseDetails($agent_id, $month)
-{
-    $details = DB::table('reports')
-        ->join('users', 'reports.agent_id', '=', 'users.id')
-        ->where('reports.agent_id', $agent_id)
-        ->whereMonth('reports.created_at', Carbon::parse($month)->month)
-        ->whereYear('reports.created_at', Carbon::parse($month)->year)
-        ->select(
-            'reports.*',
-            'users.name as agent_name',
-            'users.commission as agent_comm',
-            DB::raw('(reports.payout_amount - reports.valid_bet_amount) as win_or_lose') // Calculating win_or_lose
-        )
-        ->get();
+    {
+        $details = DB::table('reports')
+            ->join('users', 'reports.agent_id', '=', 'users.id')
+            ->where('reports.agent_id', $agent_id)
+            ->whereMonth('reports.created_at', Carbon::parse($month)->month)
+            ->whereYear('reports.created_at', Carbon::parse($month)->year)
+            ->select(
+                'reports.*',
+                'users.name as agent_name',
+                'users.commission as agent_comm',
+                DB::raw('(reports.payout_amount - reports.valid_bet_amount) as win_or_lose') // Calculating win_or_lose
+            )
+            ->get();
 
-    return view('admin.agent.win_lose_details', compact('details'));
-}
-
-// public function AuthAgentWinLoseReport()
-// {
-//     $agentId = Auth::user()->id;  // Get the authenticated user's agent_id
-//     //dd($agentId); auth_win_lose_details
-
-//     $agentReports = DB::table('reports')
-//         ->join('users', 'reports.agent_id', '=', 'users.id')
-//         ->select(
-//             'reports.agent_id',
-//             'reports.agent_commission',  // Select without summing
-//             'users.name as agent_name',
-//             'users.commission as agent_comm', 
-//             DB::raw('COUNT(DISTINCT reports.id) as qty'),
-//             DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-//             DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-//             DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-//             DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-//             DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-//             DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-//             //DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-//             DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-//             DB::raw('COUNT(*) as stake_count'),
-//             DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')  // Adding year and month name
-//         )
-//         ->where('reports.agent_id', $agentId)  // Filter by authenticated user's agent_id
-//         ->groupBy('reports.agent_id', 'users.name', 'users.commission', 'reports.agent_commission', 'report_month_year')  // Grouping by year and month
-//         ->get();
-
-//     return view('admin.agent.auth_agent_report_index', compact('agentReports'));
-// }
-
-    public function AuthAgentWinLoseReport(Request $request)
-{
-    $agentId = Auth::user()->id;  // Get the authenticated user's agent_id
-
-    $query = DB::table('reports')
-        ->join('users', 'reports.agent_id', '=', 'users.id')
-        ->select(
-            'reports.agent_id',
-            'users.name as agent_name',
-            DB::raw('COUNT(DISTINCT reports.id) as qty'),
-            DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-            DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-            DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-            DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-            DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-            DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-            DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-            DB::raw('COUNT(*) as stake_count'),
-            DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')
-        )
-        ->where('reports.agent_id', $agentId);  // Filter by authenticated user's agent_id
-
-    // Apply the date filter if provided
-    if ($request->has('start_date') && $request->has('end_date')) {
-        $query->whereBetween('reports.created_at', [$request->start_date, $request->end_date]);
-    } elseif ($request->has('month_year')) {
-        // Filter by month and year if provided
-        $monthYear = Carbon::parse($request->month_year);
-        $query->whereMonth('reports.created_at', $monthYear->month)
-            ->whereYear('reports.created_at', $monthYear->year);
+        return view('admin.agent.win_lose_details', compact('details'));
     }
 
-    $agentReports = $query->groupBy('reports.agent_id', 'users.name', 'report_month_year')->get();
+    // public function AuthAgentWinLoseReport()
+    // {
+    //     $agentId = Auth::user()->id;  // Get the authenticated user's agent_id
+    //     //dd($agentId); auth_win_lose_details
 
-    return view('admin.agent.auth_agent_report_index', compact('agentReports'));
-}
+    //     $agentReports = DB::table('reports')
+    //         ->join('users', 'reports.agent_id', '=', 'users.id')
+    //         ->select(
+    //             'reports.agent_id',
+    //             'reports.agent_commission',  // Select without summing
+    //             'users.name as agent_name',
+    //             'users.commission as agent_comm',
+    //             DB::raw('COUNT(DISTINCT reports.id) as qty'),
+    //             DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
+    //             DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
+    //             DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
+    //             DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
+    //             DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
+    //             DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
+    //             //DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
+    //             DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
+    //             DB::raw('COUNT(*) as stake_count'),
+    //             DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')  // Adding year and month name
+    //         )
+    //         ->where('reports.agent_id', $agentId)  // Filter by authenticated user's agent_id
+    //         ->groupBy('reports.agent_id', 'users.name', 'users.commission', 'reports.agent_commission', 'report_month_year')  // Grouping by year and month
+    //         ->get();
+
+    //     return view('admin.agent.auth_agent_report_index', compact('agentReports'));
+    // }
+
+    public function AuthAgentWinLoseReport(Request $request)
+    {
+        $agentId = Auth::user()->id;  // Get the authenticated user's agent_id
+
+        $query = DB::table('reports')
+            ->join('users', 'reports.agent_id', '=', 'users.id')
+            ->select(
+                'reports.agent_id',
+                'users.name as agent_name',
+                DB::raw('COUNT(DISTINCT reports.id) as qty'),
+                DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
+                DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
+                DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
+                DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
+                DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
+                DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
+                DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
+                DB::raw('COUNT(*) as stake_count'),
+                DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')
+            )
+            ->where('reports.agent_id', $agentId);  // Filter by authenticated user's agent_id
+
+        // Apply the date filter if provided
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('reports.created_at', [$request->start_date, $request->end_date]);
+        } elseif ($request->has('month_year')) {
+            // Filter by month and year if provided
+            $monthYear = Carbon::parse($request->month_year);
+            $query->whereMonth('reports.created_at', $monthYear->month)
+                ->whereYear('reports.created_at', $monthYear->year);
+        }
+
+        $agentReports = $query->groupBy('reports.agent_id', 'users.name', 'report_month_year')->get();
+
+        return view('admin.agent.auth_agent_report_index', compact('agentReports'));
+    }
 
     public function AuthAgentWinLoseDetails($agent_id, $month)
-{
-    $details = DB::table('reports')
-        ->join('users', 'reports.agent_id', '=', 'users.id')
-        ->where('reports.agent_id', $agent_id)
-        ->whereMonth('reports.created_at', Carbon::parse($month)->month)
-        ->whereYear('reports.created_at', Carbon::parse($month)->year)
-        ->select(
-            'reports.*',
-            'users.name as agent_name',
-            'users.commission as agent_comm',
-            DB::raw('(reports.payout_amount - reports.valid_bet_amount) as win_or_lose') // Calculating win_or_lose
-        )
-        ->get();
+    {
+        $details = DB::table('reports')
+            ->join('users', 'reports.agent_id', '=', 'users.id')
+            ->where('reports.agent_id', $agent_id)
+            ->whereMonth('reports.created_at', Carbon::parse($month)->month)
+            ->whereYear('reports.created_at', Carbon::parse($month)->year)
+            ->select(
+                'reports.*',
+                'users.name as agent_name',
+                'users.commission as agent_comm',
+                DB::raw('(reports.payout_amount - reports.valid_bet_amount) as win_or_lose') // Calculating win_or_lose
+            )
+            ->get();
 
-    return view('admin.agent.auth_win_lose_details', compact('details'));
-}
-
-
-
+        return view('admin.agent.auth_win_lose_details', compact('details'));
+    }
 }
 
 /*

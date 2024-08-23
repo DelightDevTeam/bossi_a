@@ -20,12 +20,6 @@
         <span class="sidenav-normal  ms-2  ps-1"> Profile </span>
       </a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link text-white " href="{{ route('admin.report.index')}}">
-        <span class="sidenav-mini-icon"> <i class="fa-solid fa-chart-column"></i> </span>
-        <span class="sidenav-normal  ms-2  ps-1"> Win/lose Report </span>
-      </a>
-    </li>
     @can('admin_access')
     <li class="nav-item">
       <a class="nav-link text-white " href="{{ route('admin.agent.index')}}">
@@ -42,24 +36,6 @@
       </a>
     </li>
     @endcan
-     @can('admin_access')
-    <li class="nav-item">
-      <a class="nav-link text-white " href="{{ url('admin/agent-win-lose-report')}}">
-        <span class="sidenav-mini-icon"> <i class="fa-solid fa-user"></i> </span>
-        <span class="sidenav-normal  ms-2  ps-1">AgentWinLose</span>
-      </a>
-    </li>
-    @endcan
-
-    @can('deposit')
-    <li class="nav-item">
-      <a class="nav-link text-white " href="{{ url('admin/auth-agent-win-lose-report')}}">
-        <span class="sidenav-mini-icon"> <i class="fa-solid fa-user"></i> </span>
-        <span class="sidenav-normal  ms-2  ps-1">AgentWinLose</span>
-      </a>
-    </li>
-    @endcan
-
     @can('admin_access')
     <li class="nav-item">
       <a class="nav-link text-white " href="{{ url('admin/players-list')}}">
@@ -74,6 +50,14 @@
         <span class="sidenav-normal  ms-2  ps-1">Transfer Log</span>
       </a>
     </li>
+      @can('bank')
+          <li class="nav-item">
+              <a class="nav-link text-white " href="{{ route('admin.bank.index')}}">
+                  <span class="sidenav-mini-icon"> <i class="fas fa-right-left"></i> </span>
+                  <span class="sidenav-normal  ms-2  ps-1">Bank Account</span>
+              </a>
+          </li>
+      @endcan
     @can('deposit')
     <li class="nav-item">
       <a class="nav-link text-white " href="{{ route('admin.agent.deposit')}}">
@@ -90,6 +74,31 @@
       </a>
     </li>
     @endcan
+      <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#report" class="nav-link text-white " aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+              <i class="material-icons py-2">settings</i>
+              <span class="nav-link-text ms-2 ps-1">Report</span>
+          </a>
+          <div class="collapse " id="report">
+              <ul class="nav ">
+                  @can('admin_access')
+                      <li class="nav-item ">
+                          <a class="nav-link text-white " href="{{ url('admin/agent-win-lose-report')}}">
+                              <span class="sidenav-mini-icon"> <i class="fa-solid fa-panorama"></i> </span>
+                              <span class="sidenav-normal  ms-2  ps-1"> Agent Win/lose Report </span>
+                          </a>
+                      </li>
+                  @endcan
+                          <li class="nav-item ">
+                              <a class="nav-link text-white " href="{{ route('admin.report.index')}}">
+                                  <span class="sidenav-mini-icon"> <i class="fa-solid fa-panorama"></i> </span>
+                                  <span class="sidenav-normal  ms-2  ps-1"> Win/lose Report </span>
+                              </a>
+                          </li>
+
+              </ul>
+          </div>
+      </li>
 
     <hr class="horizontal light mt-0">
 

@@ -14,24 +14,16 @@ class BankTableSeeder extends Seeder
     {
         $bank = [
             [
-                'name' => 'CB Bank',
-                'digit' => 13,
+                'payment_type_id' => 1,
+                'agent_id' => 2,
+                'account_number' => '03425879743',
+                'account_name' => 'Testing',
             ],
             [
-                'name' => 'AYA Bank',
-                'digit' => 16,
-            ],
-            [
-                'name' => 'KBZ Bank',
-                'digit' => 17,
-            ],
-            [
-                'name' => 'KBZ Pay',
-                'digit' => 11,
-            ],
-            [
-                'name' => 'Yoma Bank',
-                'digit' => 16,
+                'payment_type_id' => 2,
+                'agent_id' => 2,
+                'account_number' => '063425879743',
+                'account_name' => 'Testing',
             ],
         ];
 
