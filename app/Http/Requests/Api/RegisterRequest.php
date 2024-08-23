@@ -25,10 +25,10 @@ class RegisterRequest extends FormRequest
             'name' => 'required|min:3|string',
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|regex:/(09)[0-9]{9}/',
-            'referral_code' =>'required|exists:users,referral_code',
-            // 'payment_type_id' => 'required',
-            // 'account_name' => 'required|min:3|string',
-            // 'account_number' => ['required', 'regex:/^[0-9]+$/'],
+            'referral_code' => 'required|exists:users,referral_code',
+            'payment_type_id' => 'required',
+            'account_name' => 'required|min:3|string',
+            'account_number' => ['required', 'regex:/^[0-9]+$/'],
         ];
     }
 }
