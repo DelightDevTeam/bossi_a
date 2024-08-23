@@ -67,7 +67,7 @@
         <tr>
             <td>{{ $detail->created_at }}</td>
             <td>
-             <a href="https://prodmd.9977997.com/Report/BetDetail?agentCode=E829&WagerID={{ $detail->wager_id }}" target="_blank" style="color: blueviolet; text-decoration: underline;">{{ $detail->wager_id }}</a>
+             <a href="https://prodmd.9977997.com/Report/BetDetail?agentCode=E820&WagerID={{ $detail->wager_id }}" target="_blank" style="color: blueviolet; text-decoration: underline;">{{ $detail->wager_id }}</a>
             </td>
             <td>{{ $detail->bet_amount }}</td>
             <td>{{ $detail->valid_bet_amount }}</td>

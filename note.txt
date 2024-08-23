@@ -2,11 +2,11 @@
 php -r "file_put_contents('/var/www/html/lucky_m_a/storage/logs/laravel.log', '');"
 // created dev branch for kzt
 
-tail -f /var/www/html/asia_top_a/storage/logs/laravel.log
+tail -f /var/www/html/bossi_a/storage/logs/laravel.log
 
 crontab -e
 
-* * * * * cd /var/www/html/asia_top_a && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/html/bossi_a && php artisan schedule:run >> /dev/null 2>&1
 
 
 php artisan make:migration add_agent_link_to_users_table --table=users
@@ -14,3 +14,7 @@ php artisan make:migration add_agent_link_to_users_table --table=users
 // to add column 
 ALTER TABLE transactions
 ADD COLUMN agent_id INT(11) AFTER name;
+
+
+sudo chmod -R 775 /var/www/html/bossi_a/storage/logs/
+sudo chown -R www-data:www-data /var/www/html/bossi_a/storage/logs
