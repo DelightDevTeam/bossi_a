@@ -71,9 +71,9 @@ class AuthController extends Controller
             'name' => $request->name,
             'user_name' => $this->generateRandomString(),
             'password' => Hash::make($inputs['password']),
-            'payment_type_id' => $request->payment_type_id,
-            'account_name' => $request->account_name,
-            'account_number' => $request->account_number,
+            // 'payment_type_id' => $request->payment_type_id,
+            // 'account_name' => $request->account_name,
+            // 'account_number' => $request->account_number,
             'agent_id' => $agent->id,
             'type' => UserType::Player,
         ]);
