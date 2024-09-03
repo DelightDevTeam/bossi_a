@@ -18,11 +18,18 @@ class DepositRequestController extends Controller
     {
         try {
             $player = Auth::user();
+            $image = $request->file('image');
+            $ext = $image->getClientOriginalExtension();
+            $filename = uniqid('deposit').'.'.$ext;
+            $image->move(public_path('assets/img/deposit/'), $filename);
+
             $deposit = ModelsDepositRequest::create([
                 'agent_payment_type_id' => $request->agent_payment_type_id,
                 'user_id' => $player->id,
                 'agent_id' => $player->agent_id,
-                'amount' => $request->amount
+                'amount' => $request->amount,
+                'refrence_no' => $request->refrence_no,
+                'image' => $filename,
             ]);
 
             return $this->success($deposit, 'Deposit Request Success');
@@ -33,7 +40,7 @@ class DepositRequestController extends Controller
 
     public function log()
     {
-        $deposit = ModelsDepositRequest::with('paymentType')->where('user_id', Auth::id())->get();
+        $deposit = ModelsDepositRequest::with('bank')->where('user_id', Auth::id())->get();
 
         return $this->success(DepositLogResource::collection($deposit));
     }

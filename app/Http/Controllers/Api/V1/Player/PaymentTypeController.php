@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Player;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Bank;
 use App\Models\PaymentType;
 use App\Models\UserPayment;
 use App\Traits\HttpResponses;
@@ -15,7 +16,11 @@ class PaymentTypeController extends Controller
 
     public function get()
     {
-        $data = PaymentType::all();
+        $player = Auth::user();
+
+        $data = PaymentType::rightJoin('banks', function ($join)  {
+            $join->on('banks.payment_type_id', '=', 'payment_types.id');
+        })->where('banks.agent_id', '=', $player->agent_id)->get();
 
         return $this->success($data, 'Get Payment Type List');
     }

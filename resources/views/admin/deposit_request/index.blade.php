@@ -32,9 +32,8 @@
         <th>#</th>
         <th>PlayerName</th>
         <th>Requested Amount</th>
+        <th>RefrenceNo</th>
         <th>Payment Method</th>
-        <th>Bank Account Name</th>
-        <th>Bank Account Number</th>
         <th>Status</th>
         <th>Created_at</th>
         <th>Action</th>
@@ -47,9 +46,8 @@
             <span class="d-block">{{ $deposit->user->name }}</span>
           </td>
           <td>{{ number_format($deposit->amount) }}</td>
-          <td>{{ $deposit->paymentType->name }}</td>
-          <td>{{$deposit->agent->account_name}}</td>
-          <td>{{$deposit->agent->account_number}}</td>
+            <td>{{$deposit->refrence_no}}</td>
+            <td>{{ $deposit->bank->paymentType->name }}</td>
           <td>
             @if ($deposit->status == 0)
                 <span class="badge text-bg-warning text-white mb-2">Pending</span>
@@ -59,11 +57,12 @@
                 <span class="badge text-bg-danger text-white mb-2">Rejected</span>
             @endif
           </td>
-
-
           <td>{{ $deposit->created_at->format('d-m-Y') }}</td>
           <td>
     <div class="d-flex align-items-center">
+        <button class="btn btn-success p-1 me-1">
+            <a href="{{route('admin.agent.depositView', $deposit->id)}}"><i class="fas fa-eye"></i></a>
+        </button>
         <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}" method="post">
             @csrf
             <input type="hidden" name="amount" value="{{ $deposit->amount }}">

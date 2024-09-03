@@ -46,7 +46,6 @@ Route::get('gameTypeProducts/{id}', [GameController::class, 'gameTypeProducts'])
 Route::get('allGameProducts', [GameController::class, 'allGameProducts']);
 Route::get('gameType', [GameController::class, 'gameType']);
 Route::get('hotgamelist', [GameController::class, 'HotgameList']);
-Route::get('payment-type', [PaymentTypeController::class, 'get']);
 Route::post('Seamless/PullReport', [LaunchGameController::class, 'pullReport']);
 
 Route::get('/test', TestController::class);
@@ -72,7 +71,7 @@ Route::group(['prefix' => 'Seamless'], function () {
 Route::group(['middleware' => ['auth:sanctum', 'checkBanned']], function () {
     Route::get('wager-logs', [WagerController::class, 'index']);
     Route::get('transactions', [TransactionController::class, 'index']);
-
+    Route::get('payment-type', [PaymentTypeController::class, 'get']);
     //logout
     Route::get('user', [AuthController::class, 'getUser']);
     Route::get('agent', [AuthController::class, 'getAgent']);

@@ -72,7 +72,7 @@ class AgentController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(AgentRequest $request): RedirectResponse
+    public function store(AgentRefquest $request): RedirectResponse
     {
         if (! Gate::allows('agent_create')) {
             abort(403);
@@ -275,13 +275,10 @@ class AgentController extends Controller
     {
         $user = User::find($id);
         $user->update(['status' => $user->status == 1 ? 0 : 1]);
-        if (Auth::check() && Auth::id() == $id) {
-            Auth::logout();
-        }
 
         return redirect()->back()->with(
             'success',
-            'User '.($user->status == 1 ? 'activated' : 'banned').' successfully'
+            'User '.($user->status == 1 ? 'activate' : 'inactive').' successfully'
         );
     }
 
