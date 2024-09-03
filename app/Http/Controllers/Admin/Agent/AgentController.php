@@ -72,7 +72,7 @@ class AgentController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(AgentRefquest $request): RedirectResponse
+    public function store(AgentRequest $request): RedirectResponse
     {
         if (! Gate::allows('agent_create')) {
             abort(403);
