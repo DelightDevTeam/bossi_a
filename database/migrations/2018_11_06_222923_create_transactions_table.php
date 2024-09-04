@@ -15,7 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             //$table->morphs('payable');
             $table->nullableMorphs('payable'); // Make payable_type and payable_id nullable
-            $table->unsignedBigInteger('wallet_id');
+            $table->unsignedBigInteger('wallet_id')->nullable();
             $table->enum('type', ['deposit', 'withdraw'])->index();
             //$table->decimal('amount', 64, 0);
             $table->decimal('amount', 64, 2)->default(0);
