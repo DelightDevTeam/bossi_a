@@ -68,8 +68,9 @@
                         <p class="text-sm mb-0 text-capitalize ">TodayDeposit</p>
                         {{-- <h4 class="mb-0 ">{{ number_format(abs($todayDeposit->amount)/ 100, 2) }}</h4> --}}
                         <h4 class="mb-0 ">
-                            {{ $todayDeposit ? number_format(abs($todayDeposit->amount) / 100, 2) : '0.00' }}
+                            {{ $todayDeposit ? number_format(abs($todayDeposit) / 100, 2) : '0.00' }}
                         </h4>
+
                     </div>
                 </div>
                 <hr class="horizontal my-0 dark">
