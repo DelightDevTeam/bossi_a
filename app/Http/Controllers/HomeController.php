@@ -13,6 +13,7 @@ use App\Enums\TransactionName;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\DB;
 use App\Models\SeamlessTransaction;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
@@ -45,6 +46,7 @@ class HomeController extends Controller
         $totalDeposit = $this->getTotalDeposit();
         $totalWithdraw = $this->getTotalWithdraw();
         $todayDeposit = $this->getTodayDeposit();
+        Log::info('Today Deposit: ', ['amount' => $todayDeposit]);
         $todayWithdraw = $this->getTodayWithdraw();
         $provider_balance = (new AppSetting)->provider_initial_balance + SeamlessTransaction::sum('transaction_amount');
 
