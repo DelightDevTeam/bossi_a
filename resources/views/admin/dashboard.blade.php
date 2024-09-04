@@ -90,7 +90,7 @@
                         <p class="text-sm mb-0 text-capitalize ">TodayWithdraw</p>
                         {{-- <h4 class="mb-0 ">{{ number_format(abs($todayWithdraw->amount)/ 100, 2) }}</h4> --}}
                         <h4 class="mb-0 ">
-                            {{ $todayWithdraw ? number_format(abs($todayWithdraw->amount) / 100, 2) : '0.00' }}
+                            {{ $todayWithdraw ? number_format(abs($todayWithdraw) / 100, 2) : '0.00' }}
                         </h4>
                     </div>
                 </div>

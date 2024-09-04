@@ -126,15 +126,34 @@ class HomeController extends Controller
         return view('admin.logs', compact('logs'));
     }
 
-    private function  getTodayWithdraw()
-    {
-        return Auth::user()->transactions()->with('targetUser')->select(
-                DB::raw('SUM(transactions.amount) as amount'))
-                ->where('transactions.name', 'debit_transfer')
-                ->where('transactions.type', 'withdraw')
-                ->whereDate('created_at', date('Y-m-d'))
-                ->first();
-    }
+    // private function  getTodayWithdraw()
+    // {
+    //     return Auth::user()->transactions()->with('targetUser')->select(
+    //             DB::raw('SUM(transactions.amount) as amount'))
+    //             ->where('transactions.name', 'debit_transfer')
+    //             ->where('transactions.type', 'withdraw')
+    //             ->whereDate('created_at', date('Y-m-d'))
+    //             ->first();
+    // }
+
+    private function getTodayWithdraw()
+{
+    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
+    $withdraws = DB::table('transactions')
+        ->where('name', 'debit_transfer')
+        ->where('type', 'withdraw')
+        ->whereDate('created_at', now()->toDateString())
+        ->get();
+
+    Log::info('getTodayWithdraw:', ['withdraws' => $withdraws]);
+
+    // Summing up the 'amount' field
+    $sum = $withdraws->sum('amount');
+    Log::info('Today Withdraw Sum:', ['amount' => $sum]);
+
+    return $sum;
+}
+
 
     // private  function getTodayDeposit()
     // {
