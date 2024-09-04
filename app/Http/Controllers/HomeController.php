@@ -134,15 +134,26 @@ class HomeController extends Controller
                 ->first();
     }
 
-    private  function getTodayDeposit()
+    // private  function getTodayDeposit()
+    // {
+    //     return Auth::user()->transactions()->with('targetUser')
+    //             ->select(DB::raw('SUM(transactions.amount) as amount'))
+    //             ->where('transactions.name', 'credit_transfer')
+    //             ->where('transactions.type', 'deposit')
+    //             ->whereDate('created_at', date('Y-m-d'))
+    //             ->first();
+    // }
+
+    private function getTodayDeposit()
     {
-        return Auth::user()->transactions()->with('targetUser')
-                ->select(DB::raw('SUM(transactions.amount) as amount'))
-                ->where('transactions.name', 'credit_transfer')
-                ->where('transactions.type', 'deposit')
-                ->whereDate('created_at', date('Y-m-d'))
-                ->first();
+        return Auth::user()->transactions()
+            ->with('targetUser')
+            ->where('name', 'credit_transfer')
+            ->where('type', 'deposit')
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('amount');
     }
+
 
     private  function getTotalWithdraw()
     {
