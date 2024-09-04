@@ -148,8 +148,8 @@ class HomeController extends Controller
 
     private function getTodayDeposit()
 {
-    // Fetch all today's deposits for debugging
-    $deposits = Auth::user()->transactions()
+    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
+    $deposits = DB::table('transactions')
         ->where('name', 'credit_transfer')
         ->where('type', 'deposit')
         ->whereDate('created_at', now()->toDateString())
@@ -157,12 +157,13 @@ class HomeController extends Controller
 
     Log::info('Today Deposits:', ['deposits' => $deposits]);
 
-    // Summing up the amount
+    // Summing up the 'amount' field
     $sum = $deposits->sum('amount');
     Log::info('Today Deposit Sum:', ['amount' => $sum]);
 
     return $sum;
 }
+
 
 
 
