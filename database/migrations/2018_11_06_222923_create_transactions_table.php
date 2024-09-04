@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create($this->table(), static function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->morphs('payable');
+            //$table->morphs('payable');
+            $table->nullableMorphs('payable'); // Make payable_type and payable_id nullable
             $table->unsignedBigInteger('wallet_id');
             $table->enum('type', ['deposit', 'withdraw'])->index();
             //$table->decimal('amount', 64, 0);
