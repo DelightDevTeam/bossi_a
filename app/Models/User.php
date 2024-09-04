@@ -2,23 +2,24 @@
 
 namespace App\Models;
 
-use App\Models\Admin\Bank;
 use App\Models\Report;
 use App\Enums\UserType;
+use App\Models\Admin\Bank;
 use App\Models\Admin\Role;
 use App\Events\UserCreatedEvent;
 use App\Models\Admin\Permission;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\SeamlessTransaction;
 use Bavix\Wallet\Interfaces\Wallet;
 use Illuminate\Support\Facades\Auth;
 use Bavix\Wallet\Traits\HasWalletFloat;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements Wallet
 {
@@ -195,10 +196,11 @@ class User extends Authenticatable implements Wallet
         return $this->hasMany(Bank::class, 'agent_id');
     }
 
-    public function transactions()
-{
-    return $this->hasMany(Transaction::class, 'payable_id');
-}
+    public function transactions(): MorphMany
+    {
+        return $this->morphMany(Transaction::class, 'payable');
+    }
+
 
     
 }
