@@ -184,25 +184,57 @@ class HomeController extends Controller
 }
 
 
+    private function getTotalWithdraw()
+{
+    // Fetch all withdraw transactions with the 'debit_transfer' name and 'withdraw' type
+    $withdrawals = DB::table('transactions')
+        ->where('name', 'debit_transfer')
+        ->where('type', 'withdraw')
+        ->get();
+
+    Log::info('Total Withdrawals:', ['withdrawals' => $withdrawals]);
+
+    // Summing up the 'amount' field
+    $sum = $withdrawals->sum('amount');
+    Log::info('Total Withdrawal Sum:', ['amount' => $sum]);
+
+    return $sum;
+}
+ private function getTotalDeposit()
+{
+    // Fetch all deposit transactions with the 'credit_transfer' name and 'deposit' type
+    $deposits = DB::table('transactions')
+        ->where('name', 'credit_transfer')
+        ->where('type', 'deposit')
+        ->get();
+
+    Log::info('Total Deposits:', ['deposits' => $deposits]);
+
+    // Summing up the 'amount' field
+    $sum = $deposits->sum('amount');
+    Log::info('Total Deposit Sum:', ['amount' => $sum]);
+
+    return $sum;
+}
 
 
-    private  function getTotalWithdraw()
-    {
-        return Auth::user()->transactions()->with('targetUser')->select(
-                DB::raw('SUM(transactions.amount) as amount'))
-                ->where('transactions.name', 'debit_transfer')
-                ->where('transactions.type', 'withdraw')
-                ->first();
-    }
+    // private  function getTotalWithdraw()
+    // {
+    //     return Auth::user()->transactions()->with('targetUser')->select(
+    //             DB::raw('SUM(transactions.amount) as amount'))
+    //             ->where('transactions.name', 'debit_transfer')
+    //             ->where('transactions.type', 'withdraw')
+    //             ->first();
+    // }
 
-    private  function getTotalDeposit()
-    {
-        return Auth::user()->transactions()->with('targetUser')
-                ->select(DB::raw('SUM(transactions.amount) as amount'))
-                ->where('transactions.name', 'credit_transfer')
-                ->where('transactions.type', 'deposit')
-                ->first();
-    }
+    // private  function getTotalDeposit()
+    // {
+    //     return Auth::user()->transactions()->with('targetUser')
+    //             ->select(DB::raw('SUM(transactions.amount) as amount'))
+    //             ->where('transactions.name', 'credit_transfer')
+    //             ->where('transactions.type', 'deposit')
+    //             ->first();
+    // }
 
     private  function getUserCounts($isAdmin, $user)
     {

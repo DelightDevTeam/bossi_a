@@ -30,7 +30,9 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Deposit</p>
-                        <h4 class="mb-0">{{ number_format($totalDeposit->amount/ 100, 2) }}</h4>
+                        <h4 class="mb-0">{{ $totalDeposit ? number_format(abs($totalDeposit) / 100, 2) : '0.00' }}</h4>
+
+                        
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -48,7 +50,10 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize ">WithDraw</p>
-                        <h4 class="mb-0 ">{{ number_format(abs($totalWithdraw->amount)/ 100, 2) }}</h4>
+                        <h4 class="mb-0 ">
+                            {{ $totalWithdraw ? number_format(abs($totalWithdraw) / 100, 2) : '0.00' }}
+                        </h4>
+                        
                     </div>
                 </div>
                 <hr class="horizontal my-0 dark">
