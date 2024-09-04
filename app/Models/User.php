@@ -194,4 +194,11 @@ class User extends Authenticatable implements Wallet
     {
         return $this->hasMany(Bank::class, 'agent_id');
     }
+
+    public function transactions()
+{
+    return $this->hasMany(Transaction::class, 'payable_id');
+}
+
+    
 }
