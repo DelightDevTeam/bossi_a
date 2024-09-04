@@ -73,7 +73,7 @@ class HomeController extends Controller
     ]);
 
     // Get the current user (admin)
-    $admin = $request->user();
+    $admin = Auth::user();
 
     // Get the current balance before the update
     $openingBalance = $admin->wallet->balanceFloat;
