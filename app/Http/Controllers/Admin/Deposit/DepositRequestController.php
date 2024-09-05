@@ -14,12 +14,34 @@ use Illuminate\Support\Facades\Auth;
 
 class DepositRequestController extends Controller
 {
-    public function index()
-    {
-        $deposits = DepositRequest::with(['user', 'bank', 'agent'])->where('agent_id', Auth::id())->get();
+    // public function index()
+    // {
+    //     $deposits = DepositRequest::with(['user', 'bank', 'agent'])->where('agent_id', Auth::id())->get();
 
-        return view('admin.deposit_request.index', compact('deposits'));
-    }
+    //     return view('admin.deposit_request.index', compact('deposits'));
+    // }
+
+    public function index()
+{
+    // Fetch deposits for the logged-in agent and filter by their statuses
+    $approvedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 1) // 1 for Approved
+        ->get();
+
+    $rejectedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 2) // 2 for Rejected
+        ->get();
+
+    $pendingDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 0) // 0 for Pending
+        ->get();
+
+    return view('admin.deposit_request.index', compact('approvedDeposits', 'rejectedDeposits', 'pendingDeposits'));
+}
+
 
     public function statusChangeIndex(Request $request, DepositRequest $deposit)
     {
