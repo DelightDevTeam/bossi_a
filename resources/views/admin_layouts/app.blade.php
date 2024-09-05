@@ -42,7 +42,7 @@
     }
   </script>
 
-  <script>
+  {{-- <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Apply dark mode by default
     document.body.classList.add('dark-version');
@@ -59,7 +59,7 @@
       sidebar.classList.add('bg-gradient-dark');
     }
   });
-  </script>
+  </script> --}}
   <!-- Github buttons -->
   {{-- <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
   <script src="{{asset('admin_app/assets/js/material-dashboard.min.js?v=3.0.6')}}"></script>
