@@ -98,7 +98,9 @@
             <td>{{ $deposit->refrence_no }}</td>
             <td>{{ $deposit->bank->paymentType->name }}</td>
             <td><span class="badge text-bg-warning text-white mb-2">Pending</span></td>
-            <td>{{ $deposit->created_at->format('d-m-Y') }}</td>
+            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
+            <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td>
+
              <td>
     <div class="d-flex align-items-center">
         <button class="btn btn-success p-1 me-1">
@@ -139,7 +141,9 @@
             <td>{{ $deposit->refrence_no }}</td>
             <td>{{ $deposit->bank->paymentType->name }}</td>
             <td><span class="badge text-bg-success text-white mb-2">Approved</span></td>
-            <td>{{ $deposit->created_at->format('d-m-Y') }}</td>
+            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
+            <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td>
+
              <td>
     <div class="d-flex align-items-center">
         <button class="btn btn-success p-1 me-1">
@@ -180,7 +184,9 @@
             <td>{{ $deposit->refrence_no }}</td>
             <td>{{ $deposit->bank->paymentType->name }}</td>
             <td><span class="badge text-bg-danger text-white mb-2">Rejected</span></td>
-            <td>{{ $deposit->created_at->format('d-m-Y') }}</td>
+            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
+            <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td>
+
              <td>
     <div class="d-flex align-items-center">
         <button class="btn btn-success p-1 me-1">

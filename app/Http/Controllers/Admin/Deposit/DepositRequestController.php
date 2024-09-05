@@ -14,6 +14,30 @@ use Illuminate\Support\Facades\Auth;
 
 class DepositRequestController extends Controller
 {
+    public function index()
+{
+    // Fetch deposits for the logged-in agent and filter by their statuses
+    $approvedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 1) // 1 for Approved
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
+
+    $rejectedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 2) // 2 for Rejected
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
+
+    $pendingDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+        ->where('agent_id', Auth::id())
+        ->where('status', 0) // 0 for Pending
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
+
+    return view('admin.deposit_request.index', compact('approvedDeposits', 'rejectedDeposits', 'pendingDeposits'));
+}
+
     // public function index()
     // {
     //     $deposits = DepositRequest::with(['user', 'bank', 'agent'])->where('agent_id', Auth::id())->get();
@@ -21,26 +45,26 @@ class DepositRequestController extends Controller
     //     return view('admin.deposit_request.index', compact('deposits'));
     // }
 
-    public function index()
-{
-    // Fetch deposits for the logged-in agent and filter by their statuses
-    $approvedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
-        ->where('agent_id', Auth::id())
-        ->where('status', 1) // 1 for Approved
-        ->get();
+//     public function index()
+// {
+//     // Fetch deposits for the logged-in agent and filter by their statuses
+//     $approvedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+//         ->where('agent_id', Auth::id())
+//         ->where('status', 1) // 1 for Approved
+//         ->get();
 
-    $rejectedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
-        ->where('agent_id', Auth::id())
-        ->where('status', 2) // 2 for Rejected
-        ->get();
+//     $rejectedDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+//         ->where('agent_id', Auth::id())
+//         ->where('status', 2) // 2 for Rejected
+//         ->get();
 
-    $pendingDeposits = DepositRequest::with(['user', 'bank', 'agent'])
-        ->where('agent_id', Auth::id())
-        ->where('status', 0) // 0 for Pending
-        ->get();
+//     $pendingDeposits = DepositRequest::with(['user', 'bank', 'agent'])
+//         ->where('agent_id', Auth::id())
+//         ->where('status', 0) // 0 for Pending
+//         ->get();
 
-    return view('admin.deposit_request.index', compact('approvedDeposits', 'rejectedDeposits', 'pendingDeposits'));
-}
+//     return view('admin.deposit_request.index', compact('approvedDeposits', 'rejectedDeposits', 'pendingDeposits'));
+// }
 
 
     public function statusChangeIndex(Request $request, DepositRequest $deposit)
