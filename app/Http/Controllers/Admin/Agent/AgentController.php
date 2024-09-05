@@ -96,14 +96,6 @@ class AgentController extends Controller
             ]
         );
 
-        if ($request->hasFile('agent_logo')) {
-            $image = $request->file('agent_logo');
-            $ext = $image->getClientOriginalExtension();
-            $filename = uniqid('logo_').'.'.$ext;
-            $image->move(public_path('assets/img/sitelogo/'), $filename);
-            $userPrepare['agent_logo'] = $filename;
-        }
-
         $agent = User::create($userPrepare);
         $agent->roles()->sync(self::AGENT_ROLE);
 
@@ -143,22 +135,10 @@ class AgentController extends Controller
         }
 
         $param = $request->validate([
-            'name' => 'required|string',
-            'phone' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'unique:users,phone,'.$id],
-            'line_id' => 'nullable',
-            'commission' => 'nullable',
+            'name' => ['required', 'string', 'unique:users,name,'.$id],
         ]);
 
         $user = User::find($id);
-
-        if ($request->file('agent_logo')) {
-            File::delete(public_path('assets/img/sitelogo/'.$user->agent_logo));
-            $image = $request->file('agent_logo');
-            $ext = $image->getClientOriginalExtension();
-            $filename = uniqid('agent_logo').'.'.$ext;
-            $image->move(public_path('assets/img/sitelogo/'), $filename);
-            $param['agent_logo'] = $filename;
-        }
 
         $user->update($param);
 

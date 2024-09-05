@@ -46,10 +46,7 @@ class User extends Authenticatable implements Wallet
         'status',
         'type',
         'is_changed_password',
-        'referral_code',
-        'agent_logo',
-        'line_id',
-        'commission'
+        'referral_code'
     ];
 
     protected $dispatchesEvents = [
@@ -202,5 +199,5 @@ class User extends Authenticatable implements Wallet
     }
 
 
-    
+
 }

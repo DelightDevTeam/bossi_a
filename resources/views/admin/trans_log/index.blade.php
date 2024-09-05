@@ -50,7 +50,8 @@
                 </td>
                 <td>{{ $log->targetUser->name }}</td>
                 <td>
-                  <div class="d-flex align-items-center text-{{$log->type =='deposit' ? 'success' : 'danger'}} text-gradient text-sm font-weight-bold ms-auto"> {{$log->type == 'deposit' ? '+' : ''}}{{ $log->amountFloat }}</div>
+                  <div class="d-flex align-items-center text-{{$log->type =='deposit' ? 'success' : 'danger'}} text-gradient text-sm font-weight-bold ms-auto"> {{$log->type == 'deposit' ? '+' : ''}}{{ number_format($log->amountFloat )
+}}</div>
                 </td>
                 <td>
                     @if($log->type == 'withdraw')

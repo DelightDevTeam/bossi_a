@@ -103,27 +103,6 @@
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
-              <div class="custom-form-group">
-                  <label for="title">Line Id</label>
-                  <input type="url"  name="line_id" class="form-control" value="{{$agent->line_id}}" placeholder="Enter Line Id">
-                  @error('line_id')
-                  <span class="text-danger d-block">*{{ $message }}</span>
-                  @enderror
-              </div>
-              <div class="custom-form-group">
-                  <label for="title">Agent Site Logo Image</label>
-                  <input type="file" class="form-control" id="" name="agent_logo">
-                  @if($agent->agent_logo)
-                      <img src="{{asset('assets/img/sitelogo/'. $agent->agent_logo)}}" alt="" width="100px">
-                  @endif
-              </div>
-            <div class="custom-form-group">
-              <label for="title">Commission</label>
-              <input type="number"  name="commission" class="form-control" value="{{$agent->commission}}" >
-              @error('commission')
-              <span class="text-danger d-block">*{{ $message }}</span>
-              @enderror
-            </div>
             <div class="custom-form-group">
               <button type="submit" class="btn btn-primary" type="button">Update</button>
             </div>

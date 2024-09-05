@@ -22,11 +22,11 @@ class PlayerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => 'required', 'string', 'unique:users,user_name',
-            'name' => 'required|min:3|string',
+            'user_name' => ['required', 'string', 'unique:users,user_name'],
+            'name' => ['required', 'string', 'unique:users,name'],
             'phone' => ['required', 'regex:/^[0-9]+$/'],
             'password' => 'required|min:6',
-            'amount' => 'nullable|numeric'
+            'amount' => 'nullable|numeric',
         ];
     }
 }

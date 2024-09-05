@@ -52,7 +52,7 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->phone }}</td>
                     <td>{{ $user->agent ? $user->agent->name : 'N/A' }}</td>
-                    <td>{{ $user->balanceFloat }}</td>
+                    <td>{{ number_format($user->balanceFloat)}}</td>
                 </tr>
             @endforeach
         </tbody>

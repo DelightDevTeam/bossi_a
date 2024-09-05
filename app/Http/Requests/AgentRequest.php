@@ -22,15 +22,12 @@ class AgentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => 'required', 'string', 'unique:users,user_name',
-            'name' => 'required|min:3|string',
-            'phone' => 'required|regex:/(09)[0-9]{9}/',
+            'user_name' => ['required', 'string', 'unique:users,user_name'],
+            'name' => ['required', 'string', 'unique:users,name'],
+            'phone' => ['required', 'regex:/^[0-9]+$/'],
             'password' => 'required|min:6',
             'amount' => 'nullable|numeric',
             'referral_code' => ['required', 'string', 'unique:users,referral_code'],
-            'agent_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'line_id' => 'nullable',
-            'commission' => 'required'
         ];
     }
 }

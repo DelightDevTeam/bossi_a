@@ -140,17 +140,6 @@
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
-              <div class="custom-form-group">
-                  <label for="title">Line Id</label>
-                  <input type="url"  name="line_id" class="form-control" value="{{old('line_id')}}" placeholder="Enter Line Id">
-                  @error('line_id')
-                  <span class="text-danger d-block">*{{ $message }}</span>
-                  @enderror
-              </div>
-             <div class="custom-form-group">
-              <label for="title">Agent Site Logo Image</label>
-              <input type="file" class="form-control" id="" name="agent_logo">
-             </div>
             <div class="custom-form-group">
               <label>Max Balance : </label>
               <span class="badge badge-sm bg-gradient-success">{{auth()->user()->balanceFloat}}</span>
@@ -159,13 +148,6 @@
               <label for="title">Amount</label>
               <input type="text"  name="amount" class="form-control" value="{{old('amount')}}" placeholder="0.00">
               @error('amount')
-              <span class="text-danger d-block">*{{ $message }}</span>
-              @enderror
-            </div>
-            <div class="custom-form-group">
-              <label for="title">Commission</label>
-              <input type="number"  name="commission" class="form-control" value="{{old('commission')}}" >
-              @error('commission')
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
