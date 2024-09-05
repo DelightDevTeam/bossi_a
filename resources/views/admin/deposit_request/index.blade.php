@@ -21,7 +21,9 @@
       <div class="card-header pb-0">
         <div class="d-lg-flex">
           <div>
-            <h5 class="mb-0">Deposit Requested Lists</h5>
+            <h5 class="mb-0">Deposit Requested Lists
+              <span><a href="{{ url('https://77sportsmm.com/admin/deposit')}}" class="btn btn-primary">Refresh</a></span>
+            </h5>
 
           </div>
     </div>
