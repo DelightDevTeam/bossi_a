@@ -14,11 +14,38 @@ use Illuminate\Support\Facades\Auth;
 class WithDrawRequestController extends Controller
 {
     public function index()
-    {
-        $withdraws = WithDrawRequest::with('user', 'paymentType')->where('agent_id', Auth::id())->get();
+{
+    // Get approved withdrawals (status = 1 for Approved) and order by id descending
+    $approvedWithdraws = WithDrawRequest::with('user', 'paymentType')
+        ->where('agent_id', Auth::id())
+        ->where('status', 1) // Approved
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
 
-        return view('admin.withdraw_request.index', compact('withdraws'));
-    }
+    // Get pending withdrawals (status = 0 for Pending) and order by id descending
+    $pendingWithdraws = WithDrawRequest::with('user', 'paymentType')
+        ->where('agent_id', Auth::id())
+        ->where('status', 0) // Pending
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
+
+    // Get rejected withdrawals (status = 2 for Rejected) and order by id descending
+    $rejectedWithdraws = WithDrawRequest::with('user', 'paymentType')
+        ->where('agent_id', Auth::id())
+        ->where('status', 2) // Rejected
+        ->orderBy('id', 'desc') // Order by id descending
+        ->get();
+
+    // Pass the grouped results to the view
+    return view('admin.withdraw_request.index', compact('approvedWithdraws', 'pendingWithdraws', 'rejectedWithdraws'));
+}
+
+    // public function index()
+    // {
+    //     $withdraws = WithDrawRequest::with('user', 'paymentType')->where('agent_id', Auth::id())->get();
+
+    //     return view('admin.withdraw_request.index', compact('withdraws'));
+    // }
 
     public function statusChangeIndex(Request $request, WithDrawRequest $withdraw)
     {
