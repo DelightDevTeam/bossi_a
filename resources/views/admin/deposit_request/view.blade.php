@@ -110,34 +110,32 @@
                                 <input type="text" class="form-control" name=""
                                        value="{{ $deposit->bank->paymentType->name }}" readonly>
                             </div>
+                                <div class="d-lg-flex">
+                                    <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}"
+                                          method="post">
+                                        @csrf
+                                        <input type="hidden" name="status" value="2">
+                                        @if($deposit->status == 0)
+                                            <button class="btn btn-danger" type="submit">
+                                                Reject
+                                            </button>
+                                        @endif
+                                    </form>
+                                    <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}"
+                                          method="post">
+                                        @csrf
+                                        <input type="hidden" name="amount" value="{{ $deposit->amount }}">
+                                        <input type="hidden" name="status" value="1">
+                                        <input type="hidden" name="player" value="{{ $deposit->user_id }}">
+                                        @if($deposit->status == 0)
+                                            <button class="btn btn-success" type="submit" style="margin-left: 5px">
+                                                Approve
+                                            </button>
+                                        @endif
+                                    </form>
+                                </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="d-lg-flex">
-                                <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}"
-                                      method="post">
-                                    @csrf
-                                    <input type="hidden" name="status" value="2">
-                                    @if($deposit->status == 0)
-                                        <button class="btn btn-danger" type="submit">
-                                            Reject
-                                        </button>
-                                    @endif
-                                </form>
-                                <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}"
-                                      method="post">
-                                    @csrf
-                                    <input type="hidden" name="amount" value="{{ $deposit->amount }}">
-                                    <input type="hidden" name="status" value="1">
-                                    <input type="hidden" name="player" value="{{ $deposit->user_id }}">
-                                    @if($deposit->status == 0)
-                                        <button class="btn btn-success" type="submit" style="margin-left: 5px">
-                                            Approve
-                                        </button>
-                                    @endif
-                                </form>
-                            </div>
 
-                        </div>
                         </div>
                     </div>
                 </div>

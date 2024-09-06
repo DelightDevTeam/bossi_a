@@ -15,8 +15,7 @@ class WithDrawRequestController extends Controller
 {
     public function index(Request $request)
     {
-        $withdraws = WithDrawRequest::with(['user', 'bank', 'agent'])
-        ->where('agent_id', Auth::id())
+        $withdraws = WithDrawRequest::where('agent_id', Auth::id())
             ->when($request->filled('status') && $request->input('status') !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->input('status'));
             })
