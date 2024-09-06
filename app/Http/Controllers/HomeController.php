@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Exception;
 use App\Models\User;
 use App\Models\Transaction;
@@ -46,12 +47,9 @@ class HomeController extends Controller
         $totalDeposit = $this->getTotalDeposit();
         $totalWithdraw = $this->getTotalWithdraw();
         $todayDeposit = $this->getTodayDeposit();
-        Log::info('Today Deposit: ', ['amount' => $todayDeposit]);
         $todayWithdraw = $this->getTodayWithdraw();
-        $provider_balance = (new AppSetting)->provider_initial_balance + SeamlessTransaction::sum('transaction_amount');
 
         return view('admin.dashboard', compact(
-            'provider_balance',
             'agent_count',
             'player_count',
             'user',
@@ -69,7 +67,7 @@ class HomeController extends Controller
         Response::HTTP_FORBIDDEN,
         '403 Forbidden |You cannot Access this page because you do not have permission'
     );
-    
+
     $request->validate([
         'balance' => 'required|numeric',
     ]);
@@ -126,115 +124,116 @@ class HomeController extends Controller
         return view('admin.logs', compact('logs'));
     }
 
-    // private function  getTodayWithdraw()
-    // {
-    //     return Auth::user()->transactions()->with('targetUser')->select(
-    //             DB::raw('SUM(transactions.amount) as amount'))
-    //             ->where('transactions.name', 'debit_transfer')
-    //             ->where('transactions.type', 'withdraw')
-    //             ->whereDate('created_at', date('Y-m-d'))
-    //             ->first();
-    // }
+     private function  getTodayWithdraw()
+     {
+         return DB::table('transactions')->select(
+                 DB::raw('SUM(transactions.amount) as amount'))
+                ->where('transactions.target_user_id', Auth::id())
+                 ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+                 ->where('transactions.type', 'withdraw')
+                 ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
+                 ->first();
+     }
 
-    private function getTodayWithdraw()
-{
-    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
-    $withdraws = DB::table('transactions')
-        ->where('name', 'debit_transfer')
-        ->where('type', 'withdraw')
-        ->whereDate('created_at', now()->toDateString())
-        ->get();
-
-    Log::info('getTodayWithdraw:', ['withdraws' => $withdraws]);
-
-    // Summing up the 'amount' field
-    $sum = $withdraws->sum('amount');
-    Log::info('Today Withdraw Sum:', ['amount' => $sum]);
-
-    return $sum;
-}
-
-
-    // private  function getTodayDeposit()
-    // {
-    //     return Auth::user()->transactions()->with('targetUser')
-    //             ->select(DB::raw('SUM(transactions.amount) as amount'))
-    //             ->where('transactions.name', 'credit_transfer')
-    //             ->where('transactions.type', 'deposit')
-    //             ->whereDate('created_at', date('Y-m-d'))
-    //             ->first();
-    // }
-
-    private function getTodayDeposit()
-{
-    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
-    $deposits = DB::table('transactions')
-        ->where('name', 'credit_transfer')
-        ->where('type', 'deposit')
-        ->whereDate('created_at', now()->toDateString())
-        ->get();
-
-    Log::info('Today Deposits:', ['deposits' => $deposits]);
-
-    // Summing up the 'amount' field
-    $sum = $deposits->sum('amount');
-    Log::info('Today Deposit Sum:', ['amount' => $sum]);
-
-    return $sum;
-}
+//    private function getTodayWithdraw()
+//{
+//    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
+//    $withdraws = DB::table('transactions')
+//        ->where('name', 'debit_transfer')
+//        ->where('type', 'withdraw')
+//        ->whereDate('created_at', now()->toDateString())
+//        ->get();
+//
+//    Log::info('getTodayWithdraw:', ['withdraws' => $withdraws]);
+//
+//    // Summing up the 'amount' field
+//    $sum = $withdraws->sum('amount');
+//    Log::info('Today Withdraw Sum:', ['amount' => $sum]);
+//
+//    return $sum;
+//}
 
 
-    private function getTotalWithdraw()
-{
-    // Fetch all withdraw transactions with the 'debit_transfer' name and 'withdraw' type
-    $withdrawals = DB::table('transactions')
-        ->where('name', 'debit_transfer')
-        ->where('type', 'withdraw')
-        ->get();
+     private  function getTodayDeposit()
+     {
+         return Auth::user()->transactions()->with('targetUser')
+                 ->select(DB::raw('SUM(transactions.amount) as amount'))
+                 ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+                 ->where('transactions.type', 'deposit')
+                 ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
+                 ->first();
+     }
 
-    Log::info('Total Withdrawals:', ['withdrawals' => $withdrawals]);
-
-    // Summing up the 'amount' field
-    $sum = $withdrawals->sum('amount');
-    Log::info('Total Withdrawal Sum:', ['amount' => $sum]);
-
-    return $sum;
-}
- private function getTotalDeposit()
-{
-    // Fetch all deposit transactions with the 'credit_transfer' name and 'deposit' type
-    $deposits = DB::table('transactions')
-        ->where('name', 'credit_transfer')
-        ->where('type', 'deposit')
-        ->get();
-
-    Log::info('Total Deposits:', ['deposits' => $deposits]);
-
-    // Summing up the 'amount' field
-    $sum = $deposits->sum('amount');
-    Log::info('Total Deposit Sum:', ['amount' => $sum]);
-
-    return $sum;
-}
+//    private function getTodayDeposit()
+//{
+//    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
+//    $deposits = DB::table('transactions')
+//        ->where('name', 'credit_transfer')
+//        ->where('type', 'deposit')
+//        ->whereDate('created_at', now()->toDateString())
+//        ->get();
+//
+//    Log::info('Today Deposits:', ['deposits' => $deposits]);
+//
+//    // Summing up the 'amount' field
+//    $sum = $deposits->sum('amount');
+//    Log::info('Today Deposit Sum:', ['amount' => $sum]);
+//
+//    return $sum;
+//}
 
 
-    // private  function getTotalWithdraw()
-    // {
-    //     return Auth::user()->transactions()->with('targetUser')->select(
-    //             DB::raw('SUM(transactions.amount) as amount'))
-    //             ->where('transactions.name', 'debit_transfer')
-    //             ->where('transactions.type', 'withdraw')
-    //             ->first();
-    // }
+//    private function getTotalWithdraw()
+//{
+//    // Fetch all withdraw transactions with the 'debit_transfer' name and 'withdraw' type
+//    $withdrawals = DB::table('transactions')
+//        ->where('name', 'debit_transfer')
+//        ->where('type', 'withdraw')
+//        ->get();
+//
+//    Log::info('Total Withdrawals:', ['withdrawals' => $withdrawals]);
+//
+//    // Summing up the 'amount' field
+//    $sum = $withdrawals->sum('amount');
+//    Log::info('Total Withdrawal Sum:', ['amount' => $sum]);
+//
+//    return $sum;
+//}
+// private function getTotalDeposit()
+//{
+//    // Fetch all deposit transactions with the 'credit_transfer' name and 'deposit' type
+//    $deposits = DB::table('transactions')
+//        ->where('name', 'credit_transfer')
+//        ->where('type', 'deposit')
+//        ->get();
+//
+//    Log::info('Total Deposits:', ['deposits' => $deposits]);
+//
+//    // Summing up the 'amount' field
+//    $sum = $deposits->sum('amount');
+//    Log::info('Total Deposit Sum:', ['amount' => $sum]);
+//
+//    return $sum;
+//}
 
-    // private  function getTotalDeposit()
-    // {
-    //     return Auth::user()->transactions()->with('targetUser')
-    //             ->select(DB::raw('SUM(transactions.amount) as amount'))
-    //             ->where('transactions.name', 'credit_transfer')
-    //             ->where('transactions.type', 'deposit')
-    //             ->first();
-    // }
+
+     private  function getTotalWithdraw()
+     {
+         return Auth::user()->transactions()->with('targetUser')->select(
+                 DB::raw('SUM(transactions.amount) as amount'))
+             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+                 ->where('transactions.type', 'withdraw')
+                 ->first();
+     }
+
+     private  function getTotalDeposit()
+     {
+         return Auth::user()->transactions()->with('targetUser')
+                 ->select(DB::raw('SUM(transactions.amount) as amount'))
+             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+                 ->where('transactions.type', 'deposit')
+                 ->first();
+     }
 
     private  function getUserCounts($isAdmin, $user)
     {
