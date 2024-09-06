@@ -21,14 +21,39 @@
       <div class="card-header pb-0">
         <div class="d-lg-flex">
           <div>
-            <h5 class="mb-0">Deposit Requested Lists
-              <span><a href="{{ url('https://77sportsmm.com/admin/deposit')}}" class="btn btn-primary">Refresh</a></span>
-            </h5>
+              <h5 class="mb-0">Deposit Requested Lists</h5>
 
           </div>
-    </div>
-  </div>
-  <div class="table-responsive">
+        </div>
+          <form action="{{route('admin.agent.deposit')}}" method="GET">
+              <div class="row mt-3">
+                  <div class="col-md-3">
+                      <div class="input-group input-group-static mb-4">
+                          <label for="exampleFormControlSelect1" class="ms-0">Select Status</label>
+                          <select class="form-control" id="" name="status">
+                              <option value="all" {{ request()->get('status') == 'all' ? 'selected' : ''  }} >All
+                              </option>
+                              <option value="0" {{ request()->get('status') == '0' ? 'selected' : ''  }}>Pending
+                              </option>
+                              <option value="1" {{ request()->get('status') == '1' ? 'selected' : ''  }}>Approved
+                              </option>
+                              <option value="2" {{ request()->get('status') == '2' ? 'selected' : ''  }}>Rejected
+                              </option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <button class="btn btn-sm btn-primary" id="search" type="submit">Search</button>
+                      <a href="{{route('admin.agent.deposit')}}" class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh">
+                          <i class="material-icons text-lg">refresh</i>
+                      </a>
+                  </div>
+              </div>
+          </form>
+
+      </div>
+
+        <div class="table-responsive">
     <table class="table table-flush" id="users-search">
       <thead class="thead-light">
         <th>#</th>
@@ -37,202 +62,41 @@
         <th>RefrenceNo</th>
         <th>Payment Method</th>
         <th>Status</th>
-        <th>Created_at</th>
+        <th>DateTime</th>
         <th>Action</th>
       </thead>
-      {{-- <tbody>
-        @foreach ($deposits as $deposit)
-        <tr>
-          <td>{{ $loop->iteration }}</td>
-          <td>
-            <span class="d-block">{{ $deposit->user->name }}</span>
-          </td>
-          <td>{{ number_format($deposit->amount) }}</td>
-            <td>{{$deposit->refrence_no}}</td>
-            <td>{{ $deposit->bank->paymentType->name }}</td>
-          <td>
-            @if ($deposit->status == 0)
-                <span class="badge text-bg-warning text-white mb-2">Pending</span>
-            @elseif ($deposit->status == 1)
-                <span class="badge text-bg-success text-white mb-2">Approved</span>
-            @elseif ($deposit->status == 2)
-                <span class="badge text-bg-danger text-white mb-2">Rejected</span>
-            @endif
-          </td>
-          <td>{{ $deposit->created_at->format('d-m-Y') }}</td>
-          <td>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-success p-1 me-1">
-            <a href="{{route('admin.agent.depositView', $deposit->id)}}"><i class="fas fa-eye"></i></a>
-        </button>
-        <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="amount" value="{{ $deposit->amount }}">
-            <input type="hidden" name="status" value="1">
-            <input type="hidden" name="player" value="{{ $deposit->user_id }}">
-            @if($deposit->status == 0)
-                <button class="btn btn-success p-1 me-1" type="submit">
-                    <i class="fas fa-check"></i>
-                </button>
-            @endif
-        </form>
-
-         <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="status" value="2">
-             @if($deposit->status == 0)
-                 <button class="btn btn-danger p-1 me-1" type="submit">
-                     <i class="fas fa-xmark"></i>
-                 </button>
-             @endif
-        </form>
-    </div>
-</td>
-        </tr>
-        @endforeach
-      </tbody> --}}
       <tbody>
-    @foreach ($pendingDeposits as $deposit)
+      @foreach ($deposits as $deposit)
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td>{{ $deposit->user->name }}</td>
             <td>{{ number_format($deposit->amount) }}</td>
             <td>{{ $deposit->refrence_no }}</td>
             <td>{{ $deposit->bank->paymentType->name }}</td>
-            <td><span class="badge text-bg-warning text-white mb-2">Pending</span></td>
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td> --}}
+            <td>
+                @if ($deposit->status == 0)
+                    <span class="badge text-bg-warning text-white mb-2">Pending</span>
+                @elseif ($deposit->status == 1)
+                    <span class="badge text-bg-success text-white mb-2">Approved</span>
+                @elseif ($deposit->status == 2)
+                    <span class="badge text-bg-danger text-white mb-2">Rejected</span>
+                @endif
+            </td>
             <td>{{ $deposit->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
-
-             <td>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-success p-1 me-1">
-            <a href="{{route('admin.agent.depositView', $deposit->id)}}"><i class="fas fa-eye"></i></a>
-        </button>
-        <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="amount" value="{{ $deposit->amount }}">
-            <input type="hidden" name="status" value="1">
-            <input type="hidden" name="player" value="{{ $deposit->user_id }}">
-            @if($deposit->status == 0)
-                <button class="btn btn-success p-1 me-1" type="submit">
-                    <i class="fas fa-check"></i>
-                </button>
-            @endif
-        </form>
-
-         <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="status" value="2">
-             @if($deposit->status == 0)
-                 <button class="btn btn-danger p-1 me-1" type="submit">
-                     <i class="fas fa-xmark"></i>
-                 </button>
-             @endif
-        </form>
-    </div>
-</td>
-        </tr>
-    @endforeach
-</tbody>
-<tbody>
-    @foreach ($approvedDeposits as $deposit)
-        <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $deposit->user->name }}</td>
-            <td>{{ number_format($deposit->amount) }}</td>
-            <td>{{ $deposit->refrence_no }}</td>
-            <td>{{ $deposit->bank->paymentType->name }}</td>
-            <td><span class="badge text-bg-success text-white mb-2">Approved</span></td>
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td> --}}
-            <td>{{ $deposit->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
-
-             <td>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-success p-1 me-1">
-            <a href="{{route('admin.agent.depositView', $deposit->id)}}"><i class="fas fa-eye"></i></a>
-        </button>
-        <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="amount" value="{{ $deposit->amount }}">
-            <input type="hidden" name="status" value="1">
-            <input type="hidden" name="player" value="{{ $deposit->user_id }}">
-            @if($deposit->status == 0)
-                <button class="btn btn-success p-1 me-1" type="submit">
-                    <i class="fas fa-check"></i>
-                </button>
-            @endif
-        </form>
-
-         <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="status" value="2">
-             @if($deposit->status == 0)
-                 <button class="btn btn-danger p-1 me-1" type="submit">
-                     <i class="fas fa-xmark"></i>
-                 </button>
-             @endif
-        </form>
-    </div>
-</td>
-        </tr>
-    @endforeach
-</tbody>
-<tbody>
-    @foreach ($rejectedDeposits as $deposit)
-        <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $deposit->user->name }}</td>
-            <td>{{ number_format($deposit->amount) }}</td>
-            <td>{{ $deposit->refrence_no }}</td>
-            <td>{{ $deposit->bank->paymentType->name }}</td>
-            <td><span class="badge text-bg-danger text-white mb-2">Rejected</span></td>
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y') }}</td> --}}
-            {{-- <td>{{ $deposit->created_at->format('d-m-Y H:i:s') }}</td> --}}
-            <td>{{ $deposit->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
-
-             <td>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-success p-1 me-1">
-            <a href="{{route('admin.agent.depositView', $deposit->id)}}"><i class="fas fa-eye"></i></a>
-        </button>
-        <form action="{{ route('admin.agent.depositStatusUpdate', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="amount" value="{{ $deposit->amount }}">
-            <input type="hidden" name="status" value="1">
-            <input type="hidden" name="player" value="{{ $deposit->user_id }}">
-            @if($deposit->status == 0)
-                <button class="btn btn-success p-1 me-1" type="submit">
-                    <i class="fas fa-check"></i>
-                </button>
-            @endif
-        </form>
-
-         <form action="{{ route('admin.agent.depositStatusreject', $deposit->id) }}" method="post">
-            @csrf
-            <input type="hidden" name="status" value="2">
-             @if($deposit->status == 0)
-                 <button class="btn btn-danger p-1 me-1" type="submit">
-                     <i class="fas fa-xmark"></i>
-                 </button>
-             @endif
-        </form>
-    </div>
+            <td>
+            <div class="d-flex align-items-center">
+                    <a href="{{route('admin.agent.depositView', $deposit->id)}}" class="text-white btn btn-info">Detail</a>
+            </div>
 </td>
         </tr>
     @endforeach
 </tbody>
     </table>
-  </div>
-</div>
 </div>
 </div>
 @endsection
 @section('scripts')
 <script src="{{ asset('admin_app/assets/js/plugins/datatables.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
   if (document.getElementById('users-search')) {
     const dataTableSearch = new simpleDatatables.DataTable("#users-search", {
@@ -265,30 +129,5 @@
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var errorMessage =  @json(session('error'));
-        var successMessage =  @json(session('success'));
-        console.log(successMessage);
-        @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: successMessage,
-            background: 'hsl(230, 40%, 10%)',
-            timer: 3000,
-            showConfirmButton: false
-        });
-        @elseif(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: errorMessage,
-            background: 'hsl(230, 40%, 10%)',
-            timer: 3000,
-            showConfirmButton: false
-        });
-        @endif
-    });
-</script>
+
 @endsection
