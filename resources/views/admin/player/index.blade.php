@@ -40,6 +40,7 @@
             <th>Phone</th>
             <th>Status</th>
             <th>Balance</th>
+            <th>CreatedAt</th>
             <th>Action</th>
             <th>Transaction</th>
           </thead>
@@ -60,6 +61,7 @@
               <small class="badge bg-gradient-{{ $user->status == 1 ? 'success' : 'danger' }}">{{ $user->status == 1 ? "active" : "inactive" }}</small>
               </td>
               <td>{{number_format($user->balanceFloat) }}</td>
+                <td>{{ $user->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
               <td>
                 @if ($user->status == 1)
                 <a onclick="event.preventDefault(); document.getElementById('banUser-{{ $user->id }}').submit();" class="me-2" href="#" data-bs-toggle="tooltip" data-bs-original-title="Active Player">

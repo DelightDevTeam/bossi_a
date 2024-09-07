@@ -24,7 +24,7 @@
             <h5 class="mb-0">Transfer Detail </h5>
 
           </div>
-          
+
         </div>
       </div>
       <div class="table-responsive">
@@ -38,9 +38,8 @@
             <th>Profit</th>
             <th>CurrentCashBalance</th>
             <th>Date</th>
-        
           </thead>
-          
+
           <tbody>
             @foreach ($transfer_detail as $index => $log)
             <tr>
@@ -48,21 +47,7 @@
               <td>{{ $log->fromUser->name }} </td>
               <td>{{ $log->toUser->name }}</td>
               <td>
-                @if ($log->cash_in == null)
-                ----
-                @else
-                {{ $log->cash_in }}
-                @endif
-              </td>
-              <td>
-                @if ($log->cash_out == null)
-                ----
-                @else
-                {{ $log->cash_out }}
-                @endif
-              </td>
-              <td>
-                @php
+                  @php
 
                 $profit = $log->cash_in - $log->cash_out;
                 @endphp

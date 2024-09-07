@@ -20,7 +20,7 @@ class WithDrawRequestController extends Controller
                 $query->where('status', $request->input('status'));
             })
             ->orderBy('id', 'desc')
-        ->get();
+            ->get();
 
         return view('admin.withdraw_request.index', compact('withdraws'));
     }
@@ -71,5 +71,4 @@ class WithDrawRequestController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
-
 }

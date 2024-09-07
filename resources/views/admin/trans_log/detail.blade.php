@@ -71,18 +71,18 @@
             <td>{{ $log->targetUser->name }}</td>
             <td>
                 @if($log->type == 'deposit')
-                <p class="text-danger font-weight-bold">  +{{ abs($log->amountFloat) }}</p>
+                <p class="text-success font-weight-bold">  +{{ abs($log->amountFloat) }}</p>
                 @elseif($log->type == 'withdraw')
-                <p class="text-success font-weight-bold"> -{{ abs($log->amountFloat) }}</p>
+                <p class="text-danger font-weight-bold"> -{{ abs($log->amountFloat) }}</p>
                 @else
                 <p>No data Fount</p>
                 @endif
             </td>
             <td>
                 @if($log->type == 'withdraw')
-                    <p class="text-danger">Withdraw</p>
+                    <p class="text-danger font-weight-bold">Withdraw</p>
                 @else
-                    <p class="text-success">Deposit</p>
+                    <p class="text-success font-weight-bold">Deposit</p>
                 @endif
             </td>
         </tr>
