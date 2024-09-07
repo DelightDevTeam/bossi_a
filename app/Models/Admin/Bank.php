@@ -15,6 +15,6 @@ class Bank extends Model
 
     public function paymentType(): BelongsTo
     {
-        return  $this->belongsTo(PaymentType::class);
+        return $this->belongsTo(PaymentType::class);
     }
 }

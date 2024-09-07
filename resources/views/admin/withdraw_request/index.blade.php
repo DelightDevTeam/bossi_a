@@ -73,7 +73,7 @@
                                     <span class="d-block">{{ $withdraw->user->name }}</span>
                                 </td>
                                 <td>{{ number_format($withdraw->amount) }}</td>
-                                <td>{{ $withdraw->paymentType->name }}</td>
+                                <td>{{ $withdraw->bank->paymentType->name }}</td>
                                 <td>{{$withdraw->account_name}}</td>
                                 <td>{{$withdraw->account_number}}</td>
                                 <td>

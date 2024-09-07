@@ -16,16 +16,16 @@ class DepositRequest extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function agent()
     {
-        return $this->belongsTo(User::class,'agent_id');
-    }
-    public function bank()
-    {
-        return $this->belongsTo(Bank::class,'agent_payment_type_id');
+        return $this->belongsTo(User::class, 'agent_id');
     }
 
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class, 'agent_payment_type_id');
+    }
 }

@@ -14,18 +14,14 @@ class AgentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $agent = [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'user_name' => $this->user_name,
             'phone' => $this->phone,
             'email' => $this->email,
             'agent_logo' => asset('assets/img/sitelogo/'.$this->agent_logo),
-            'line_id' => $this->line_id
+            'line_id' => $this->line_id,
         ];
-
-        $result = ['agent' => $agent, 'banks' => $this->banks];
-
-        return $result;
     }
 }
