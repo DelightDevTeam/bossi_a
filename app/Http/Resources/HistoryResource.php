@@ -17,7 +17,7 @@ class HistoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->user->name,
-            'payment_type' => $this->paymentType->name,
+            'payment_type' => $this->bank->paymentType->name,
             'account_name' => $this->account_name,
             'account_number' => $this->account_number,
             'amount' => $this->amount,
