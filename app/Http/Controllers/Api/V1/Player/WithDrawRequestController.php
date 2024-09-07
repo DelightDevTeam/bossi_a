@@ -18,7 +18,7 @@ class WithDrawRequestController extends Controller
     {
         try {
             $player = Auth::user();
-            if ($request->amount > $player->balance) {
+            if ($request->amount > $player->balanceFloat) {
                 return $this->error('', 'Insufficient Balance', 401);
             }
             $withdraw = ModelsWithDrawRequest::create([
