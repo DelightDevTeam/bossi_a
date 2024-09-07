@@ -50,14 +50,13 @@
                 </td>
                 <td>{{ $log->targetUser->name }}</td>
                 <td>
-                  <div class="d-flex align-items-center text-{{$log->type =='deposit' ? 'success' : 'danger'}} text-gradient text-sm font-weight-bold ms-auto"> {{$log->type == 'deposit' ? '+' : ''}}{{ number_format($log->amountFloat )
-}}</div>
+                  <div class="d-flex align-items-center text-{{$log->type =='deposit' ? 'success' : 'danger'}} text-gradient text-sm font-weight-bold ms-auto"> {{$log->type == 'deposit' ? '+' : ''}}{{ number_format($log->amountFloat)}}</div>
                 </td>
                 <td>
                     @if($log->type == 'withdraw')
-                        <p class="text-danger">Withdraw</p>
+                        <p class="text-danger font-weight-bold">Withdraw</p>
                     @else
-                        <p class="text-success">Deposit</p>
+                        <p class="text-success font-weight-bold">Deposit</p>
                     @endif
                 </td>
             </tr>

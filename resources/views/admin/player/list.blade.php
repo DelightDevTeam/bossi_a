@@ -42,6 +42,7 @@
                 <th>User Name</th>
                 <th>User Phone</th>
                 <th>Creator</th>
+                <th>CreatedAt</th>
                 <th>Balance</th>
             </tr>
         </thead>
@@ -53,6 +54,7 @@
                     <td>{{ $user->phone }}</td>
                     <td>{{ $user->agent ? $user->agent->name : 'N/A' }}</td>
                     <td>{{ number_format($user->balanceFloat)}}</td>
+                    <td>{{ $user->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
                 </tr>
             @endforeach
         </tbody>
