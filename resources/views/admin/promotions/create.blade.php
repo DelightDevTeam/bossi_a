@@ -87,20 +87,6 @@
                   @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="title" class="form-label text-dark">Title</label>
-                    <input type="text" class="form-control border border-1 border-secondary ps-2" id="title" name="title" placeholder="Enter Title">
-                    @error('title')
-                    <span class="text-danger d-block">*{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="desc" class="form-label text-dark">Description</label>
-                    <textarea name="description" class="form-control border border-1 border-secondary ps-2" id="desc" cols="30" rows="10" placeholder="Enter Descriptiton"></textarea>
-                    @error('description')
-                    <span class="text-danger d-block">*{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="mb-3">
                   <button class="btn btn-primary" type="submit">Create</button>
                 </div>
               </form>

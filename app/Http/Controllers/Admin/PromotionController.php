@@ -34,8 +34,6 @@ class PromotionController extends Controller
     {
         $request->validate([
             'image' => 'required',
-            'title' => 'required',
-            'description' => 'required',
         ]);
         // image
         $image = $request->file('image');
@@ -45,8 +43,6 @@ class PromotionController extends Controller
 
         $promotion = Promotion::create([
             'image' => $filename,
-            'title' => $request->title,
-            'description' => $request->description,
         ]);
 
         return redirect()->route('admin.promotions.index')->with('success', 'New Promotion Created Successfully.');
@@ -73,10 +69,6 @@ class PromotionController extends Controller
      */
     public function update(Request $request, Promotion $promotion)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $ext = $image->getClientOriginalExtension();
@@ -84,19 +76,13 @@ class PromotionController extends Controller
             $image->move(public_path('assets/img/promotions/'), $filename);
             $promotion->update([
                 'image' => $filename,
-                'title' => $request->title,
-                'description' => $request->description,
-            ]);
-
-            return redirect()->route('admin.promotions.index')->with('success', 'Promotion Updated');
-        } else {
-            $promotion->update([
-                'title' => $request->title,
-                'description' => $request->description,
             ]);
 
             return redirect()->route('admin.promotions.index')->with('success', 'Promotion Updated');
         }
+
+        return redirect()->route('admin.promotions.index')->with('success', 'Promotion Updated');
+
     }
 
     /**

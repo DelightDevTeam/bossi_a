@@ -37,11 +37,7 @@
           <thead class="thead-light">
             <tr>
               <th>#</th>
-              <th>Image</th>
-              <th>Title</th>
-              {{-- <th>Description</th> --}}
-              <th>Created At</th>
-              {{-- <th>Updated At</th> --}}
+              <th>Image</th><th>Created At</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -52,12 +48,9 @@
               <td>
                 <img width="150px" class="img-thumbnail" src="{{ $promotion->img_url }}" alt="">
               </td>
-              <td>{{ $promotion->title }}</td>
-              {{-- <td>{!! $promotion->description !!}</td> --}}
               <td class="text-sm font-weight-normal">{{ $promotion->created_at->format('F j, Y') }}</td>
-              {{-- <td class="text-sm font-weight-normal">{{ $promotion->updated_at->format('F j, Y') }}</td> --}}
               <td>
-                <a href="{{ route('admin.promotions.edit', $promotion->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Edit Banner"><i class="material-icons-round text-secondary position-relative text-lg">mode_edit</i></a>
+                <a href="{{ route('admin.promotions.edit', $promotion->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Edit Promotion"><i class="material-icons-round text-secondary position-relative text-lg">mode_edit</i></a>
                 <a href="{{ route('admin.promotions.show', $promotion->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Preview Banner Detail">
                   <i class="material-icons text-secondary position-relative text-lg">visibility</i>
                 </a>
