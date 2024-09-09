@@ -30,3 +30,22 @@ bossi ပြင်ရန် lists
 6.siteတစ်ခုလုံးရှိ  Deposit / Withdraw balance များကို Depositဆို အစိမ်းရောင် withdraw ဆိုအနီရောင်ဖြင့်ပြပေးရန်။
 7.balance ကို  header တွင်ထပ်ထည့်ရန်။ ဘယ် pageရောက်ရောက်headerတွင်balanceကိုကြည့်လိုရရန်။
 8.agentများရဲ့ ReferralCode ကို admin ကိုယ်တိုင်သတ်မှတ်ပေးလိုရရန်။ 
+# Set the ownership of the entire project directory to www-data user and group
+chown -R www-data:www-data /var/www/html/bossi_a
+
+# Set directory permissions to allow access
+chmod -R 755 /var/www/html/bossi_a
+
+# Ensure storage directory is owned by www-data
+sudo chown -R www-data:www-data /var/www/html/bossi_a/storage
+
+# Ensure bootstrap cache directory is owned by www-data
+sudo chown -R www-data:www-data /var/www/html/bossi_a/bootstrap/cache
+
+# Set correct permissions for storage directory
+sudo chmod -R 775 /var/www/html/bossi_a/storage
+
+# Set correct permissions for bootstrap cache directory
+sudo chmod -R 775 /var/www/html/bossi_a/bootstrap/cache
+ls -al /var/www/html/bossi_a
+sudo systemctl restart nginx
