@@ -40,6 +40,7 @@
             <th>To User</th>
             <th>Amount</th>
             <th>Type</th>
+            <th>Note</th>
         </tr>
     </thead>
     <tbody>
@@ -59,6 +60,7 @@
                         <p class="text-success font-weight-bold">Deposit</p>
                     @endif
                 </td>
+                <td>{{$log->note}}</td>
             </tr>
         @endforeach
     </tbody>
