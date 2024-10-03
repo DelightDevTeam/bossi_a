@@ -31,7 +31,7 @@ class WithDrawRequestController extends Controller
         try {
             $agent = Auth::user();
             $player = User::find($request->player);
-            dd('here');
+           // dd('here');
 
             if ($request->status == 1 && $agent->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'You do not have enough balance to transfer!');
