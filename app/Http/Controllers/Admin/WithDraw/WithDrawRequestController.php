@@ -27,7 +27,7 @@ class WithDrawRequestController extends Controller
 
     public function statusChangeIndex(Request $request, WithDrawRequest $withdraw)
     {
-        dd('here');
+       // dd('here');
         try {
             $agent = Auth::user();
             $player = User::find($request->player);
