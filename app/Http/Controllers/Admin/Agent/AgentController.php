@@ -106,7 +106,7 @@ class AgentController extends Controller
         return redirect()->back()
             ->with('success', 'Agent created successfully')
             ->with('password', $request->password)
-            ->with('username', $agent->user_name)
+            ->with('username', $agent->name)
             ->with('amount', $transfer_amount);
     }
 
