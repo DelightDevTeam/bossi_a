@@ -33,13 +33,10 @@ class WithDrawRequestController extends Controller
             $player = User::find($request->player);
            // dd('here');
 
-            if ($request->status == 1 && $agent->balanceFloat < $request->amount) {
-                return redirect()->back()->with('error', 'You do not have enough balance to transfer!');
-            }
-
             if ($request->status == 1 && $player->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'Player do not have enough balance!');
             }
+            
             $withdraw->update([
                 'status' => $request->status,
             ]);
