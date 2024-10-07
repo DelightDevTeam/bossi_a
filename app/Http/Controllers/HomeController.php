@@ -101,22 +101,6 @@ class HomeController extends Controller
     return back()->with('success', 'Add New Balance Successfully.');
 }
 
-    // public function balanceUp(Request $request)
-    // {
-    //     abort_if(
-    //         Gate::denies('admin_access'),
-    //         Response::HTTP_FORBIDDEN,
-    //         '403 Forbidden |You cannot  Access this page because you do not have permission'
-    //     );
-    //     $request->validate([
-    //         'balance' => 'required|numeric',
-    //     ]);
-
-    //     app(WalletService::class)->deposit($request->user(), $request->balance, TransactionName::CapitalDeposit);
-
-    //     return back()->with('success', 'Add New Balance Successfully.');
-    // }
-
     public function logs($id)
     {
         $logs = UserLog::with('user')->where('user_id', $id)->get();
@@ -135,25 +119,6 @@ class HomeController extends Controller
                  ->first();
      }
 
-//    private function getTodayWithdraw()
-//{
-//    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
-//    $withdraws = DB::table('transactions')
-//        ->where('name', 'debit_transfer')
-//        ->where('type', 'withdraw')
-//        ->whereDate('created_at', now()->toDateString())
-//        ->get();
-//
-//    Log::info('getTodayWithdraw:', ['withdraws' => $withdraws]);
-//
-//    // Summing up the 'amount' field
-//    $sum = $withdraws->sum('amount');
-//    Log::info('Today Withdraw Sum:', ['amount' => $sum]);
-//
-//    return $sum;
-//}
-
-
      private  function getTodayDeposit()
      {
          return Auth::user()->transactions()->with('targetUser')
@@ -163,59 +128,6 @@ class HomeController extends Controller
                  ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
                  ->first();
      }
-
-//    private function getTodayDeposit()
-//{
-//    // Fetch today's deposits with the 'credit_transfer' name and 'deposit' type
-//    $deposits = DB::table('transactions')
-//        ->where('name', 'credit_transfer')
-//        ->where('type', 'deposit')
-//        ->whereDate('created_at', now()->toDateString())
-//        ->get();
-//
-//    Log::info('Today Deposits:', ['deposits' => $deposits]);
-//
-//    // Summing up the 'amount' field
-//    $sum = $deposits->sum('amount');
-//    Log::info('Today Deposit Sum:', ['amount' => $sum]);
-//
-//    return $sum;
-//}
-
-
-//    private function getTotalWithdraw()
-//{
-//    // Fetch all withdraw transactions with the 'debit_transfer' name and 'withdraw' type
-//    $withdrawals = DB::table('transactions')
-//        ->where('name', 'debit_transfer')
-//        ->where('type', 'withdraw')
-//        ->get();
-//
-//    Log::info('Total Withdrawals:', ['withdrawals' => $withdrawals]);
-//
-//    // Summing up the 'amount' field
-//    $sum = $withdrawals->sum('amount');
-//    Log::info('Total Withdrawal Sum:', ['amount' => $sum]);
-//
-//    return $sum;
-//}
-// private function getTotalDeposit()
-//{
-//    // Fetch all deposit transactions with the 'credit_transfer' name and 'deposit' type
-//    $deposits = DB::table('transactions')
-//        ->where('name', 'credit_transfer')
-//        ->where('type', 'deposit')
-//        ->get();
-//
-//    Log::info('Total Deposits:', ['deposits' => $deposits]);
-//
-//    // Summing up the 'amount' field
-//    $sum = $deposits->sum('amount');
-//    Log::info('Total Deposit Sum:', ['amount' => $sum]);
-//
-//    return $sum;
-//}
-
 
      private  function getTotalWithdraw()
      {
