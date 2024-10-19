@@ -53,7 +53,8 @@
                                     <td>
                                         <div
                                             class="d-flex align-items-center text-{{ $log->type == 'withdraw' ? 'success' : 'danger' }} text-gradient text-sm font-weight-bold ms-auto">
-                                           {{ number_format(abs($log->amountFloat)) }}
+                                            {{ number_format($log->amountFloat < 0 ? $log->amountFloat * -1 : $log->amountFloat) }}
+
                                         </div>
                                     </td>
                                     <td>

@@ -56,6 +56,7 @@
                     <table class="table table-flush" id="users-search">
                         <thead class="thead-light">
                         <th>#</th>
+                        <th>PlayerId</th>
                         <th>PlayerName</th>
                         <th>Requested Amount</th>
                         <th>Payment Method</th>
@@ -69,6 +70,7 @@
                         @foreach ($withdraws as $withdraw)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $withdraw->user->user_name}}</td>
                                 <td>
                                     <span class="d-block">{{ $withdraw->user->name }}</span>
                                 </td>
