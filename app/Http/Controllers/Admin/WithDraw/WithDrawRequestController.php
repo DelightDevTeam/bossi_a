@@ -27,16 +27,16 @@ class WithDrawRequestController extends Controller
 
     public function statusChangeIndex(Request $request, WithDrawRequest $withdraw)
     {
-       // dd('here');
+        // dd('here');
         try {
             $agent = Auth::user();
             $player = User::find($request->player);
-           // dd('here');
+            // dd('here');
 
             if ($request->status == 1 && $player->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'Player do not have enough balance!');
             }
-            
+
             $withdraw->update([
                 'status' => $request->status,
             ]);

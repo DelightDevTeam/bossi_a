@@ -2,24 +2,24 @@
 
 namespace App\Models;
 
-use App\Models\Report;
 use App\Enums\UserType;
-use App\Models\Admin\Bank;
-use App\Models\Admin\Role;
 use App\Events\UserCreatedEvent;
+use App\Models\Admin\Bank;
 use App\Models\Admin\Permission;
-use Laravel\Sanctum\HasApiTokens;
+use App\Models\Admin\Role;
+use App\Models\Report;
 use App\Models\SeamlessTransaction;
 use Bavix\Wallet\Interfaces\Wallet;
-use Illuminate\Support\Facades\Auth;
 use Bavix\Wallet\Traits\HasWalletFloat;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements Wallet
 {
@@ -46,7 +46,7 @@ class User extends Authenticatable implements Wallet
         'status',
         'type',
         'is_changed_password',
-        'referral_code'
+        'referral_code',
     ];
 
     protected $dispatchesEvents = [
@@ -197,7 +197,4 @@ class User extends Authenticatable implements Wallet
     {
         return $this->morphMany(Transaction::class, 'payable');
     }
-
-
-
 }

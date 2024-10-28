@@ -18,7 +18,7 @@ class PaymentTypeController extends Controller
     {
         $player = Auth::user();
 
-        $data = PaymentType::rightJoin('banks', function ($join)  {
+        $data = PaymentType::rightJoin('banks', function ($join) {
             $join->on('banks.payment_type_id', '=', 'payment_types.id');
         })->where('banks.agent_id', '=', $player->agent_id)->get();
 
