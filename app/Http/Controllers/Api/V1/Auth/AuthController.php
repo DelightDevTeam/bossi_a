@@ -150,7 +150,7 @@ class AuthController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'SB'.$randomNumber;
+        return 'SBS'.$randomNumber;
     }
 
     private function isExistingUserForAgent($phone, $agent_id)
