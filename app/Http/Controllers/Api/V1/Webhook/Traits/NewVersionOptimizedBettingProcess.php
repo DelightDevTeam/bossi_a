@@ -14,6 +14,7 @@ use App\Models\Wager;
 use App\Services\WalletService;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 trait NewVersionOptimizedBettingProcess
@@ -116,6 +117,9 @@ trait NewVersionOptimizedBettingProcess
         $userId = $event->user_id; // Get user_id from the SeamlessEvent
         $seamlessEventId = $event->id; // Get the ID of the SeamlessEvent
 
+        // Log the start of the transaction processing
+        Log::debug("Starting createWagerTransactions for user ID: $userId, event ID: $seamlessEventId");
+
         // Retry logic for deadlock handling
         do {
             try {
@@ -124,10 +128,46 @@ trait NewVersionOptimizedBettingProcess
                     $wagerData = [];
                     $seamlessTransactionsData = [];
 
+                    // Log batch size being processed
+                    Log::debug('Processing bet batch of size: '.count($betBatch));
+
                     // Loop through each bet in the batch
                     foreach ($betBatch as $transaction) {
+
+                        // Log transaction details
+                        Log::debug('Processing transaction', ['transaction' => $transaction]);
+
                         // If transaction is an instance of the RequestTransaction object, extract the data
                         if ($transaction instanceof \App\Services\Slot\Dto\RequestTransaction) {
+
+                            // Attempt to retrieve the ActualGameTypeID from the database based on GameType
+                            $gameType = GameType::where('code', $transaction->GameType)->first();
+                            if ($gameType) {
+                                $transaction->ActualGameTypeID = $gameType->id;
+                            } else {
+                                throw new \Exception('Invalid GameType: '.$transaction->GameType);
+                            }
+
+                            // Attempt to retrieve the ActualProductID from the database based on ProductID
+                            $product = Product::where('code', $transaction->ProductID)->first();
+                            if ($product) {
+                                $transaction->ActualProductID = $product->id;
+                            } else {
+                                throw new \Exception('Invalid ProductID: '.$transaction->ProductID);
+                            }
+
+                            // Fetch the rate from GameTypeProduct
+                            $game_type_product = GameTypeProduct::where('game_type_id', $gameType->id)
+                                ->where('product_id', $product->id)
+                                ->first();
+                            if (! $game_type_product) {
+                                throw new \Exception('GameTypeProduct combination not found.');
+                            }
+
+                            // Ensure rate is a valid integer, and provide a fallback if missing
+                            $rate = (int) ($game_type_product->rate ?? 1);  // Cast rate to int with fallback value
+
+                            // Build transaction data
                             $transactionData = [
                                 'Status' => $transaction->Status,
                                 'ProductID' => $transaction->ProductID,
@@ -138,11 +178,13 @@ trait NewVersionOptimizedBettingProcess
                                 'TransactionAmount' => $transaction->TransactionAmount,
                                 'PayoutAmount' => $transaction->PayoutAmount,
                                 'ValidBetAmount' => $transaction->ValidBetAmount,
-                                'Rate' => $transaction->Rate,
+                                'Rate' => $rate,  // Use the fetched rate
                                 'ActualGameTypeID' => $transaction->ActualGameTypeID,
                                 'ActualProductID' => $transaction->ActualProductID,
                             ];
+
                         } else {
+                            Log::error('Invalid transaction data format', ['transaction' => $transaction]);
                             throw new \Exception('Invalid transaction data format.');
                         }
 
@@ -180,76 +222,35 @@ trait NewVersionOptimizedBettingProcess
 
                     // Perform batch inserts
                     if (! empty($wagerData)) {
+                        Log::debug('Inserting wager data', ['wagerData' => $wagerData]);
                         DB::table('wagers')->insert($wagerData); // Insert wagers in bulk
                     }
 
                     if (! empty($seamlessTransactionsData)) {
+                        Log::debug('Inserting seamless transactions data', ['seamlessTransactionsData' => $seamlessTransactionsData]);
                         DB::table('seamless_transactions')->insert($seamlessTransactionsData); // Insert transactions in bulk
                     }
                 });
 
+                Log::debug('createWagerTransactions completed successfully for event ID: '.$seamlessEventId);
                 break; // Exit the retry loop if successful
 
             } catch (\Illuminate\Database\QueryException $e) {
                 if ($e->getCode() === '40001') { // Deadlock error code
+                    Log::warning('Deadlock detected, retrying...', ['retryCount' => $retryCount]);
                     $retryCount++;
                     if ($retryCount >= $maxRetries) {
+                        Log::error('Max retries reached, throwing exception.', ['error' => $e]);
                         throw $e; // Max retries reached, fail
                     }
                     sleep(1); // Wait for a second before retrying
                 } else {
+                    Log::error('Query exception encountered', ['error' => $e]);
                     throw $e; // Rethrow if it's not a deadlock exception
                 }
             }
         } while ($retryCount < $maxRetries);
     }
-
-    /**
-     * Process the wallet transfer, handling deadlock retries.
-     */
-    // public function processTransfer(User $from, User $to, TransactionName $transactionName, float $amount, int $rate, array $meta)
-    // {
-    //     $retryCount = 0;
-    //     $maxRetries = 5;
-
-    //     do {
-    //         try {
-    //             DB::transaction(function () use ($from, $to, $amount, $transactionName, $meta) {
-    //                 // Fetch the wallet and lock it for update
-    //                 $wallet = $from->wallet()->lockForUpdate()->firstOrFail();
-
-    //                 // Ensure the version matches for optimistic locking
-    //                 if ($wallet->version !== $from->wallet->version) {
-    //                     throw new \Exception('Version mismatch detected.');
-    //                 }
-
-    //                 // Update wallet balance
-    //                 $wallet->balance -= $amount;
-
-    //                 // Increment the version column
-    //                 $wallet->version += 1;
-
-    //                 // Save the changes to the wallet
-    //                 $wallet->save();
-
-    //                 // Perform the transfer
-    //                 app(WalletService::class)->transfer($from, $to, abs($amount), $transactionName, $meta);
-    //             });
-
-    //             break;  // Exit loop if successful
-    //         } catch (\Illuminate\Database\QueryException $e) {
-    //             if ($e->getCode() === '40001') {  // Deadlock error code
-    //                 $retryCount++;
-    //                 if ($retryCount >= $maxRetries) {
-    //                     throw $e;  // Max retries reached, fail
-    //                 }
-    //                 sleep(1);  // Wait before retrying
-    //             } else {
-    //                 throw $e;  // Rethrow non-deadlock exceptions
-    //             }
-    //         }
-    //     } while ($retryCount < $maxRetries);
-    // }
 
     public function processTransfer(User $from, User $to, TransactionName $transactionName, float $amount, int $rate, array $meta)
     {
