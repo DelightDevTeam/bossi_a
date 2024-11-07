@@ -31,8 +31,8 @@ trait NewVersionOptimizedBettingProcess
         }
 
 
-        $event = $this->createEvent($request);
 
+        $event = $this->createEvent($request);
 
         DB::beginTransaction();
         try {
@@ -47,6 +47,8 @@ trait NewVersionOptimizedBettingProcess
             $before_balance = $request->getMember()->balanceFloat;
 
             // Create and store the event in the database
+            //$event = $this->createEvent($request);
+
 
             // Retry logic for creating wager transactions with exponential backoff
             $seamless_transactions = $this->retryOnDeadlock(function () use ($validator, $event) {
@@ -148,13 +150,13 @@ trait NewVersionOptimizedBettingProcess
                     $seamlessTransactionsData = [];
 
                     // Log batch size being processed
-                    Log::debug('Processing bet batch of size: '.count($betBatch));
+                    //Log::debug('Processing bet batch of size: '.count($betBatch));
 
                     // Loop through each bet in the batch
                     foreach ($betBatch as $transaction) {
 
                         // Log transaction details
-                        Log::debug('Processing transaction', ['transaction' => $transaction]);
+                        //Log::debug('Processing transaction', ['transaction' => $transaction]);
 
                         // If transaction is an instance of the RequestTransaction object, extract the data
                         if ($transaction instanceof \App\Services\Slot\Dto\RequestTransaction) {
@@ -241,17 +243,17 @@ trait NewVersionOptimizedBettingProcess
 
                     // Perform batch inserts
                     if (! empty($wagerData)) {
-                        Log::debug('Inserting wager data', ['wagerData' => $wagerData]);
+                        //Log::debug('Inserting wager data', ['wagerData' => $wagerData]);
                         DB::table('wagers')->insert($wagerData); // Insert wagers in bulk
                     }
 
                     if (! empty($seamlessTransactionsData)) {
-                        Log::debug('Inserting seamless transactions data', ['seamlessTransactionsData' => $seamlessTransactionsData]);
+                        //Log::debug('Inserting seamless transactions data', ['seamlessTransactionsData' => $seamlessTransactionsData]);
                         DB::table('seamless_transactions')->insert($seamlessTransactionsData); // Insert transactions in bulk
                     }
                 });
 
-                Log::debug('createWagerTransactions completed successfully for event ID: '.$seamlessEventId);
+                //Log::debug('createWagerTransactions completed successfully for event ID: '.$seamlessEventId);
                 break; // Exit the retry loop if successful
 
             } catch (\Illuminate\Database\QueryException $e) {
