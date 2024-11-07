@@ -139,7 +139,7 @@ trait NewVersionOptimizedBettingProcess
         $seamlessEventId = $event->id; // Get the ID of the SeamlessEvent
 
         // Log the start of the transaction processing
-        Log::debug("Starting createWagerTransactions for user ID: $userId, event ID: $seamlessEventId");
+        //Log::debug("Starting createWagerTransactions for user ID: $userId, event ID: $seamlessEventId");
 
         // Retry logic for deadlock handling
         do {
