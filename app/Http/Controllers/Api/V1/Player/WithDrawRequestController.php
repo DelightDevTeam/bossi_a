@@ -9,6 +9,7 @@ use App\Models\WithDrawRequest as ModelsWithDrawRequest;
 use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class WithDrawRequestController extends Controller
 {
@@ -18,9 +19,14 @@ class WithDrawRequestController extends Controller
     {
         try {
             $player = Auth::user();
+            if (! $player || ! Hash::check($request->password, $player->password)) {
+                return $this->error('', 'လျို့ဝှက်နံပါတ်ကိုက်ညီမှု မရှိပါ။', 401);
+            }
+            
             if ($request->amount > $player->balanceFloat) {
                 return $this->error('', 'Insufficient Balance', 401);
             }
+
             $withdraw = ModelsWithDrawRequest::create([
                 'user_id' => $player->id,
                 'agent_id' => $player->agent_id,
