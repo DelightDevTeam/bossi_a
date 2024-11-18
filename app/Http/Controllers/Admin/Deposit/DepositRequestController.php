@@ -69,7 +69,7 @@ class DepositRequestController extends Controller
         }
     }
 
-    public  function view(DepositRequest $deposit)
+    public function view(DepositRequest $deposit)
     {
         return view('admin.deposit_request.view', compact('deposit'));
     }

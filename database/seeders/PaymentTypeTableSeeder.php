@@ -52,7 +52,7 @@ class PaymentTypeTableSeeder extends Seeder
             [
                 'name' => 'Yoma Banking',
                 'image' => 'yoma_banking.png',
-            ]
+            ],
         ];
 
         DB::table('payment_types')->insert($types);

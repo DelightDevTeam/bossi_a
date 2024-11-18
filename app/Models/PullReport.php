@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use App\Models\Report;
+use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PullReport extends Command
 {
@@ -75,7 +75,7 @@ class PullReport extends Command
             if ($data['Wagers'] != null) {
                 $data = $response['Wagers'];
                 Log::info($response);
-               // $user = Auth::user(); // Get the authenticated user
+                // $user = Auth::user(); // Get the authenticated user
                 foreach ($data as $report) {
                     $user = User::where('user_name', $report['MemberName'])->first();
                     $wagerId = Report::where('wager_id', $report['WagerID'])->first();
@@ -99,7 +99,7 @@ class PullReport extends Command
                             'modified_on' => $report['ModifiedOn'],
                             'settlement_date' => $report['SettlementDate'],
                             'agent_id' => $user->agent_id,
-                            'agent_commission' => $user->parent->commission
+                            'agent_commission' => $user->parent->commission,
                         ]);
                     } else {
                         Report::create([
@@ -120,7 +120,7 @@ class PullReport extends Command
                             'modified_on' => $report['ModifiedOn'],
                             'settlement_date' => $report['SettlementDate'],
                             'agent_id' => $user->agent_id,
-                            'agent_commission' => $user->parent->commission
+                            'agent_commission' => $user->parent->commission,
                         ]);
                     }
                 }

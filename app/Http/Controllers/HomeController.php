@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionName;
+use App\Models\Admin\UserLog;
+use App\Models\SeamlessTransaction;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Services\WalletService;
+use App\Settings\AppSetting;
 use Carbon\Carbon;
 use Exception;
-use App\Models\User;
-use App\Models\Transaction;
-use Illuminate\Support\Str;
-use App\Settings\AppSetting;
 use Illuminate\Http\Request;
-use App\Models\Admin\UserLog;
-use App\Enums\TransactionName;
-use App\Services\WalletService;
-use Illuminate\Support\Facades\DB;
-use App\Models\SeamlessTransaction;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends Controller
@@ -61,45 +61,45 @@ class HomeController extends Controller
     }
 
     public function balanceUp(Request $request)
-{
-    abort_if(
-        Gate::denies('admin_access'),
-        Response::HTTP_FORBIDDEN,
-        '403 Forbidden |You cannot Access this page because you do not have permission'
-    );
+    {
+        abort_if(
+            Gate::denies('admin_access'),
+            Response::HTTP_FORBIDDEN,
+            '403 Forbidden |You cannot Access this page because you do not have permission'
+        );
 
-    $request->validate([
-        'balance' => 'required|numeric',
-    ]);
+        $request->validate([
+            'balance' => 'required|numeric',
+        ]);
 
-    // Get the current user (admin)
-    $admin = Auth::user();
+        // Get the current user (admin)
+        $admin = Auth::user();
 
-    // Get the current balance before the update
-    $openingBalance = $admin->wallet->balanceFloat;
+        // Get the current balance before the update
+        $openingBalance = $admin->wallet->balanceFloat;
 
-    // Update the balance using the WalletService
-    app(WalletService::class)->deposit($admin, $request->balance, TransactionName::CapitalDeposit);
+        // Update the balance using the WalletService
+        app(WalletService::class)->deposit($admin, $request->balance, TransactionName::CapitalDeposit);
 
-    // Record the transaction in the transactions table
-    Transaction::create([
-        'payable_type' => get_class($admin),
-        'payable_id' => $admin->id,
-        'wallet_id' => $admin->wallet->id,
-        'type' => 'deposit',
-        'amount' => $request->balance,
-        'confirmed' => true,
-        'meta' => json_encode([
-            'name' => TransactionName::CapitalDeposit,
-            'opening_balance' => $openingBalance,
-            'new_balance' => $admin->wallet->balanceFloat,
-            'target_user_id' => $admin->id,
-        ]),
-        'uuid' => Str::uuid()->toString(),
-    ]);
+        // Record the transaction in the transactions table
+        Transaction::create([
+            'payable_type' => get_class($admin),
+            'payable_id' => $admin->id,
+            'wallet_id' => $admin->wallet->id,
+            'type' => 'deposit',
+            'amount' => $request->balance,
+            'confirmed' => true,
+            'meta' => json_encode([
+                'name' => TransactionName::CapitalDeposit,
+                'opening_balance' => $openingBalance,
+                'new_balance' => $admin->wallet->balanceFloat,
+                'target_user_id' => $admin->id,
+            ]),
+            'uuid' => Str::uuid()->toString(),
+        ]);
 
-    return back()->with('success', 'Add New Balance Successfully.');
-}
+        return back()->with('success', 'Add New Balance Successfully.');
+    }
 
     public function logs($id)
     {
@@ -108,53 +108,53 @@ class HomeController extends Controller
         return view('admin.logs', compact('logs'));
     }
 
-     private function  getTodayWithdraw()
-     {
-         return DB::table('transactions')->select(
-                 DB::raw('SUM(transactions.amount) as amount'))
-                ->where('transactions.target_user_id', Auth::id())
-                 ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-                 ->where('transactions.type', 'withdraw')
-                 ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
-                 ->first();
-     }
+    private function getTodayWithdraw()
+    {
+        return DB::table('transactions')->select(
+            DB::raw('SUM(transactions.amount) as amount'))
+            ->where('transactions.target_user_id', Auth::id())
+            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+            ->where('transactions.type', 'withdraw')
+            ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
+            ->first();
+    }
 
-     private  function getTodayDeposit()
-     {
-         return Auth::user()->transactions()->with('targetUser')
-                 ->select(DB::raw('SUM(transactions.amount) as amount'))
-                 ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-                 ->where('transactions.type', 'deposit')
-                 ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
-                 ->first();
-     }
+    private function getTodayDeposit()
+    {
+        return Auth::user()->transactions()->with('targetUser')
+            ->select(DB::raw('SUM(transactions.amount) as amount'))
+            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+            ->where('transactions.type', 'deposit')
+            ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
+            ->first();
+    }
 
-     private  function getTotalWithdraw()
-     {
-         return Auth::user()->transactions()->with('targetUser')->select(
-                 DB::raw('SUM(transactions.amount) as amount'))
-             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-                 ->where('transactions.type', 'withdraw')
-                 ->first();
-     }
+    private function getTotalWithdraw()
+    {
+        return Auth::user()->transactions()->with('targetUser')->select(
+            DB::raw('SUM(transactions.amount) as amount'))
+            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+            ->where('transactions.type', 'withdraw')
+            ->first();
+    }
 
-     private  function getTotalDeposit()
-     {
-         return Auth::user()->transactions()->with('targetUser')
-                 ->select(DB::raw('SUM(transactions.amount) as amount'))
-             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-                 ->where('transactions.type', 'deposit')
-                 ->first();
-     }
+    private function getTotalDeposit()
+    {
+        return Auth::user()->transactions()->with('targetUser')
+            ->select(DB::raw('SUM(transactions.amount) as amount'))
+            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
+            ->where('transactions.type', 'deposit')
+            ->first();
+    }
 
-    private  function getUserCounts($isAdmin, $user)
+    private function getUserCounts($isAdmin, $user)
     {
         return function ($roleTitle) use ($isAdmin, $user) {
-                return User::whereHas('roles', function ($query) use ($roleTitle) {
-                    $query->where('title', '=', $roleTitle);
-                })->when(!$isAdmin, function ($query) use ($user) {
-                    $query->where('agent_id', $user->id);
-                })->count();
+            return User::whereHas('roles', function ($query) use ($roleTitle) {
+                $query->where('title', '=', $roleTitle);
+            })->when(! $isAdmin, function ($query) use ($user) {
+                $query->where('agent_id', $user->id);
+            })->count();
         };
     }
 }

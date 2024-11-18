@@ -120,12 +120,11 @@ class PlayerController extends Controller
                 ->with('password', $request->password)
                 ->with('username', $user->user_name);
         } catch (\Exception $e) {
-            Log::error('Error creating user: ' . $e->getMessage());
+            Log::error('Error creating user: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'An error occurred while creating the player.');
         }
     }
-
 
     /**
      * Display the specified resource.

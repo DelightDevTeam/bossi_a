@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Api\V1\Webhook\Traits;
 
-use Exception;
-use App\Models\User;
-use App\Models\Wager;
+use App\Enums\TransactionName;
+use App\Enums\TransactionStatus;
 use App\Enums\WagerStatus;
+use App\Http\Requests\Slot\SlotWebhookRequest;
+use App\Models\Admin\GameType;
+use App\Models\Admin\GameTypeProduct;
 use App\Models\Admin\Product;
 use App\Models\SeamlessEvent;
-use App\Enums\TransactionName;
-use App\Models\Admin\GameType;
-use App\Services\WalletService;
-use App\Enums\TransactionStatus;
 use App\Models\SeamlessTransaction;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Admin\GameTypeProduct;
+use App\Models\User;
+use App\Models\Wager;
 use App\Services\Slot\Dto\RequestTransaction;
-use App\Http\Requests\Slot\SlotWebhookRequest;
-use Illuminate\Database\Eloquent\MassAssignmentException;
+use App\Services\WalletService;
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\MassAssignmentException;
+use Illuminate\Support\Facades\Auth;
 
 trait UseWebhook
 {
@@ -83,7 +83,6 @@ trait UseWebhook
 
             $rate = $game_type_product->rate;
             $user = Auth::user(); // Get the authenticated user
-
 
             $seamless_transactions[] = $event->transactions()->create([
                 'user_id' => $event->user_id,
