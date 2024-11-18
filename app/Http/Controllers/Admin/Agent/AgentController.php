@@ -135,7 +135,8 @@ class AgentController extends Controller
         }
 
         $param = $request->validate([
-            'name' => ['required', 'string', 'unique:users,name,'.$id],
+            'name' => ['required', 'string'],
+            'phone' => ['required', 'regex:/^[0-9]+$/', 'unique:users,phone,'.$id],
         ]);
 
         $user = User::find($id);
