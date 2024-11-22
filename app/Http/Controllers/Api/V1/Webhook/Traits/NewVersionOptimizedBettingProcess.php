@@ -30,8 +30,6 @@ trait NewVersionOptimizedBettingProcess
             return response()->json(['message' => 'The wallet is currently being updated. Please try again later.'], 409);
         }
 
-
-
         $event = $this->createEvent($request);
 
         DB::beginTransaction();
@@ -49,7 +47,6 @@ trait NewVersionOptimizedBettingProcess
             // Create and store the event in the database
             //$event = $this->createEvent($request);
 
-
             // Retry logic for creating wager transactions with exponential backoff
             $seamless_transactions = $this->retryOnDeadlock(function () use ($validator, $event) {
                 return $this->createWagerTransactions($validator->getRequestTransactions(), $event);
@@ -57,34 +54,34 @@ trait NewVersionOptimizedBettingProcess
 
             // Process each seamless transaction
             foreach ($seamless_transactions as $transaction) {
-            $fromUser = $request->getMember();
-            $toUser = User::adminUser();  // Admin or central system wallet
+                $fromUser = $request->getMember();
+                $toUser = User::adminUser();  // Admin or central system wallet
 
-            // Fetch the rate from GameTypeProduct before calling processTransfer()
-            $game_type = GameType::where('code', $transaction->GameType)->first();
-            $product = Product::where('code', $transaction->ProductID)->first();
-            $game_type_product = GameTypeProduct::where('game_type_id', $game_type->id)
-                ->where('product_id', $product->id)
-                ->first();
+                // Fetch the rate from GameTypeProduct before calling processTransfer()
+                $game_type = GameType::where('code', $transaction->GameType)->first();
+                $product = Product::where('code', $transaction->ProductID)->first();
+                $game_type_product = GameTypeProduct::where('game_type_id', $game_type->id)
+                    ->where('product_id', $product->id)
+                    ->first();
 
-            // Use the rate from GameTypeProduct or fallback to a default value
-            $rate = (int) ($game_type_product->rate ?? 1);
+                // Use the rate from GameTypeProduct or fallback to a default value
+                $rate = (int) ($game_type_product->rate ?? 1);
 
-            $meta = [
-                'wager_id' => $transaction->WagerID,               // Use object property access
-                'event_id' => $request->getMessageID(),
-                'seamless_transaction_id' => $transaction->TransactionID,  // Use object property access
-            ];
+                $meta = [
+                    'wager_id' => $transaction->WagerID,               // Use object property access
+                    'event_id' => $request->getMessageID(),
+                    'seamless_transaction_id' => $transaction->TransactionID,  // Use object property access
+                ];
 
-            // Call processTransfer for each transaction
-            $this->processTransfer(
-                $fromUser,                        // From user
-                $toUser,                          // To user (admin/system wallet)
-                TransactionName::Stake,           // Transaction name (e.g., Stake)
-                $transaction->TransactionAmount,  // Use object property access for TransactionAmount
-                $rate,                            // Use the fetched rate or default value
-                $meta                             // Meta data (wager id, event id, etc.)
-            );
+                // Call processTransfer for each transaction
+                $this->processTransfer(
+                    $fromUser,                        // From user
+                    $toUser,                          // To user (admin/system wallet)
+                    TransactionName::Stake,           // Transaction name (e.g., Stake)
+                    $transaction->TransactionAmount,  // Use object property access for TransactionAmount
+                    $rate,                            // Use the fetched rate or default value
+                    $meta                             // Meta data (wager id, event id, etc.)
+                );
             }
 
             // Refresh balance after transactions
