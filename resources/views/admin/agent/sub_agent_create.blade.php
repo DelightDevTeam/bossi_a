@@ -82,6 +82,10 @@
             padding-right: 30px;
             /* Make space for custom arrow */
         }
+        input[type="radio"]:checked {
+            background-color: rgb(231, 0, 197);
+        }
+
 
         /* Add more styling here for the select and wrapper elements as needed */
     </style>
