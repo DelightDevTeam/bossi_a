@@ -74,6 +74,7 @@ class SubAgentController extends Controller
 
 public function store(SubAgentRequest $request): RedirectResponse
 {
+    dd('here sub agent');
     if (! Gate::allows('sub_agent_create')) {
         abort(403);
     }
