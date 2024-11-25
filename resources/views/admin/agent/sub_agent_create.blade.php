@@ -168,8 +168,12 @@
                                     </div>
                                     <div>
                                         <label class="d-flex gap-2">
-                                            <input type="checkbox" name="permissions[]" value="copy_player" required> Copy
-                                            Player
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="copy_player" required>
+                                            </div>
+                                            <div>
+                                                Copy Player
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
