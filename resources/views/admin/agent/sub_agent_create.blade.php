@@ -129,7 +129,7 @@
                             </div>
 
                             <div class="custom-form-group">
-                                <label for="name">Agent Name <span class="text-danger">*</span></label>
+                                <label for="name">Sub Agent Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" value="{{ old('name') }}"
                                     placeholder="Enter Agent Name">
                                 @error('name')
@@ -390,7 +390,7 @@
                             </div>
 
                             <div class="custom-form-group">
-                                <button class="btn btn-info" type="button" id="resetFormButton">Cancel</button>
+                                {{-- <button class="btn btn-info" type="button" id="resetFormButton">Cancel</button> --}}
 
                                 <button type="submit" class="btn btn-primary" type="button">Submit</button>
                             </div>
@@ -484,19 +484,19 @@
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('resetFormButton').addEventListener('click', function() {
-                var form = this.closest('form');
-                form.querySelectorAll('input[type="text"]').forEach(input => {
-                    // Resets input fields to their default values
-                    input.value = '';
-                });
-                form.querySelectorAll('select').forEach(select => {
-                    // Resets select fields to their default selected option
-                    select.selectedIndex = 0;
-                });
-                // Add any additional field resets here if necessary
-            });
-        });
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     document.getElementById('resetFormButton').addEventListener('click', function() {
+        //         var form = this.closest('form');
+        //         form.querySelectorAll('input[type="text"]').forEach(input => {
+        //             // Resets input fields to their default values
+        //             input.value = '';
+        //         });
+        //         form.querySelectorAll('select').forEach(select => {
+        //             // Resets select fields to their default selected option
+        //             select.selectedIndex = 0;
+        //         });
+        //         // Add any additional field resets here if necessary
+        //     });
+        // });
     </script>
 @endsection
