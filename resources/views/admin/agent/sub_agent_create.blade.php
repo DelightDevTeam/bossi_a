@@ -148,50 +148,50 @@
                                     <!-- All Downline Settings -->
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="all_downline" required> All
+                                            <input type="checkbox" name="permissions[]" value="all_downline" required> All
                                             Downline Setting
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="new_player" required> New
+                                            <input type="checkbox" name="permissions[]" value="new_player" required> New
                                             Player
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="copy_player" required> Copy
+                                            <input type="checkbox" name="permissions[]" value="copy_player" required> Copy
                                             Player
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="player_list" required> Player
+                                            <input type="checkbox" name="permissions[]" value="player_list" required> Player
                                             List
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="edit_member" required> Edit
+                                            <input type="checkbox" name="permissions[]" value="edit_member" required> Edit
                                             Member
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="change_all_status" required>
+                                            <input type="checkbox" name="permissions[]" value="change_all_status" required>
                                             Change All Status
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="unlock_password_lock"
+                                            <input type="checkbox" name="permissions[]" value="unlock_password_lock"
                                                 required>
                                             Unlock Password Lock
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="adjust_balance" required>
+                                            <input type="checkbox" name="permissions[]" value="adjust_balance" required>
                                             Adjust
                                             Balance
                                         </label>
@@ -200,62 +200,64 @@
                                     <!-- All Report Permissions -->
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="all_report" required> All
+                                            <input type="checkbox" name="permissions[]" value="all_report" required> All
                                             Report
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="win_lose" required> Win/Lose
+                                            <input type="checkbox" name="permissions[]" value="win_lose" required> Win/Lose
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="win_lose_simple" required>
+                                            <input type="checkbox" name="permissions[]" value="win_lose_simple" required>
                                             Win/Lose Simple
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="win_lose_by_product" required>
+                                            <input type="checkbox" name="permissions[]" value="win_lose_by_product"
+                                                required>
                                             Win/Lose By Product
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="refer_friends_profit"
+                                            <input type="checkbox" name="permissions[]" value="refer_friends_profit"
                                                 required>
                                             Refer Friends Profit
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="cf_current_bets" required> CF
+                                            <input type="checkbox" name="permissions[]" value="cf_current_bets" required> CF
                                             Current Bets
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="cf_match_result" required> CF
+                                            <input type="checkbox" name="permissions[]" value="cf_match_result" required> CF
                                             Match Result
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="sports_match_report" required>
+                                            <input type="checkbox" name="permissions[]" value="sports_match_report"
+                                                required>
                                             Sports Match Report
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="transaction_history"
+                                            <input type="checkbox" name="permissions[]" value="transaction_history"
                                                 required>
                                             Transaction History
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="outstanding" required>
+                                            <input type="checkbox" name="permissions[]" value="outstanding" required>
                                             Outstanding
                                         </label>
                                     </div>
@@ -263,31 +265,32 @@
                                     <!-- Other Permissions -->
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="fund_in_out" required> Fund
+                                            <input type="checkbox" name="permissions[]" value="fund_in_out" required>
+                                            Fund
                                             In/Out
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="sports_betting" required>
+                                            <input type="checkbox" name="permissions[]" value="sports_betting" required>
                                             Sports
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="log_access" required> Log
+                                            <input type="checkbox" name="permissions[]" value="log_access" required> Log
                                             Access
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="campaign_management"
+                                            <input type="checkbox" name="permissions[]" value="campaign_management"
                                                 required> Campaign Management
                                         </label>
                                     </div>
                                     <div>
                                         <label>
-                                            <input type="radio" name="permissions[]" value="refer_friends_program"
+                                            <input type="checkbox" name="permissions[]" value="refer_friends_program"
                                                 required> Refer Friends Program
                                         </label>
                                     </div>
