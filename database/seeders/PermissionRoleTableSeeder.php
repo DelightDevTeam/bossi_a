@@ -64,8 +64,7 @@ class PermissionRoleTableSeeder extends Seeder
             'sports_betting_access',
             'log_access',
             'campaign_management',
-            'refer_friends_program'
-
+            'refer_friends_program',
 
         ])->pluck('id');
 
@@ -106,8 +105,7 @@ class PermissionRoleTableSeeder extends Seeder
             'sports_betting_access',
             'log_access',
             'campaign_management',
-            'refer_friends_program'
-
+            'refer_friends_program',
 
         ])->pluck('id');
 

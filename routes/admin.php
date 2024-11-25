@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Agent\AgentController;
+use App\Http\Controllers\Admin\Agent\SubAgentController;
 use App\Http\Controllers\Admin\BankController;
 use App\Http\Controllers\Admin\BannerAds\BannerAdsController;
 use App\Http\Controllers\Admin\BannerController;
@@ -84,6 +85,8 @@ Route::group([
     Route::patch('hotgameLists/{id}/toggleStatus', [GameListController::class, 'HotGameStatus'])->name('HotGame.toggleStatus');
     // game list end
     Route::resource('agent', AgentController::class);
+    Route::resource('sub-agent', SubAgentController::class);
+
     Route::get('agent-cash-in/{id}', [AgentController::class, 'getCashIn'])->name('agent.getCashIn');
     Route::post('agent-cash-in/{id}', [AgentController::class, 'makeCashIn'])->name('agent.makeCashIn');
     Route::get('agent/cash-out/{id}', [AgentController::class, 'getCashOut'])->name('agent.getCashOut');

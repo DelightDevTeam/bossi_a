@@ -8,6 +8,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubAgentRequest;
 use App\Http\Requests\TransferLogRequest;
+use App\Models\Admin\Permission;
 use App\Models\Admin\TransferLog;
 use App\Models\PaymentType;
 use App\Models\User;
@@ -24,12 +25,30 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Admin\Permission;
-
 
 class SubAgentController extends Controller
 {
     private const AGENT_ROLE = 3;
+
+    public function index(): View
+    {
+        if (! Gate::allows('agent_index')) {
+            abort(403);
+        }
+
+        //kzt
+        $users = User::with('roles')
+            ->whereHas('roles', function ($query) {
+                $query->where('role_id', self::AGENT_ROLE);
+            })
+            ->where('agent_id', auth()->id())
+            ->orderBy('id', 'desc')
+            ->get();
+
+        //kzt
+        return view('admin.agent.sub_agent_index', compact('users'));
+    }
+
 
     public function create()
     {
@@ -51,55 +70,54 @@ class SubAgentController extends Controller
     }
 
     public function store(SubAgentRequest $request): RedirectResponse
-{
-    if (! Gate::allows('agent_create')) {
-        abort(403);
-    }
-
-    // Validate the form inputs
-    $inputs = $request->validated();
-
-    // Prepare user data
-    $userPrepare = array_merge(
-        $inputs,
-        [
-            'password' => Hash::make($inputs['password']),
-            'agent_id' => Auth::id(),
-            'type' => UserType::SubAgent,
-        ]
-    );
-
-    try {
-        DB::beginTransaction();
-
-        // Create the sub-agent user
-        $agent = User::create($userPrepare);
-        $agent->roles()->sync(self::AGENT_ROLE);
-
-        // Process permissions (radio selection - single permission or extend for multiple if required)
-        $selectedPermissions = $request->input('permissions', []); // Get the selected permissions
-        if (!is_array($selectedPermissions)) {
-            $selectedPermissions = [$selectedPermissions]; // Ensure it's an array
+    {
+        if (! Gate::allows('agent_create')) {
+            abort(403);
         }
 
-        // Fetch permission IDs from database
-        $permissionIds = Permission::whereIn('title', $selectedPermissions)->pluck('id')->toArray();
+        // Validate the form inputs
+        $inputs = $request->validated();
 
-        // Sync permissions with the sub-agent
-        $agent->permissions()->sync($permissionIds);
+        // Prepare user data
+        $userPrepare = array_merge(
+            $inputs,
+            [
+                'password' => Hash::make($inputs['password']),
+                'agent_id' => Auth::id(),
+                'type' => UserType::SubAgent,
+            ]
+        );
 
-        DB::commit();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->back()
-            ->with('success', 'Agent created successfully')
-            ->with('password', $request->password)
-            ->with('username', $agent->name);
-    } catch (\Exception $e) {
-        DB::rollBack();
+            // Create the sub-agent user
+            $agent = User::create($userPrepare);
+            $agent->roles()->sync(self::AGENT_ROLE);
 
-        return redirect()->back()
-            ->with('error', 'Failed to create agent: ' . $e->getMessage());
+            // Process permissions (radio selection - single permission or extend for multiple if required)
+            $selectedPermissions = $request->input('permissions', []); // Get the selected permissions
+            if (! is_array($selectedPermissions)) {
+                $selectedPermissions = [$selectedPermissions]; // Ensure it's an array
+            }
+
+            // Fetch permission IDs from database
+            $permissionIds = Permission::whereIn('title', $selectedPermissions)->pluck('id')->toArray();
+
+            // Sync permissions with the sub-agent
+            $agent->permissions()->sync($permissionIds);
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('success', 'Agent created successfully')
+                ->with('password', $request->password)
+                ->with('username', $agent->name);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Failed to create agent: '.$e->getMessage());
+        }
     }
-}
-
 }

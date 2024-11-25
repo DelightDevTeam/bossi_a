@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form role="form" method="POST" class="text-start" action="{{ route('admin.agent.store') }}"
+                        <form role="form" method="POST" class="text-start" action="{{ route('admin.sub-agent.store') }}"
                             enctype="multipart/form-data">
                             @csrf
 
