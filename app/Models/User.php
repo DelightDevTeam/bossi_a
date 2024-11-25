@@ -25,7 +25,7 @@ class User extends Authenticatable implements Wallet
 {
     use HasApiTokens, HasFactory, HasWalletFloat, Notifiable;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     /**
      * The attributes that are mass assignable.

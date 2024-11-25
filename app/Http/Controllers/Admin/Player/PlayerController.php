@@ -24,7 +24,7 @@ class PlayerController extends Controller
 {
     protected $userService;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     public function __construct(UserService $userService)
     {
