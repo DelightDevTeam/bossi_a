@@ -116,8 +116,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form role="form" method="POST" class="text-start" action="{{ route('admin.sub-agent.store') }}"
-                            enctype="multipart/form-data">
+                        <form role="form" method="POST" class="text-start" action="{{ route('admin.subagent.store') }}">
                             @csrf
 
                             <div class="custom-form-group">
@@ -461,7 +460,7 @@
                 icon: 'error',
                 title: errorMessage,
                 background: 'hsl(230, 40%, 10%)',
-                showConfirmButton: true,
+                showConfirmButton: false,
                 timer: 1500
             })
         @endif

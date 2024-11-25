@@ -85,7 +85,7 @@ Route::group([
     Route::patch('hotgameLists/{id}/toggleStatus', [GameListController::class, 'HotGameStatus'])->name('HotGame.toggleStatus');
     // game list end
     Route::resource('agent', AgentController::class);
-    Route::resource('sub-agent', SubAgentController::class);
+    Route::resource('subagent', SubAgentController::class);
 
     Route::get('agent-cash-in/{id}', [AgentController::class, 'getCashIn'])->name('agent.getCashIn');
     Route::post('agent-cash-in/{id}', [AgentController::class, 'makeCashIn'])->name('agent.makeCashIn');
