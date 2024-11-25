@@ -82,6 +82,11 @@
             padding-right: 30px;
             /* Make space for custom arrow */
         }
+        input[type="radio"]:checked {
+            background-color: red;
+            border-color: red;
+        }
+
 
         /* Add more styling here for the select and wrapper elements as needed */
     </style>
@@ -144,7 +149,7 @@
                             <!-- Permissions Section -->
                             <div class="custom-form-group">
                                 <label for="permissions">Permissions <span class="text-danger">*</span></label>
-                                <div class="d-flex flex-wrap">
+                                <div class="d-flex flex-wrap gap-2">
                                     <!-- All Downline Settings -->
                                     <div>
                                         <label class="d-flex gap-2">
@@ -157,145 +162,233 @@
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="new_player" required> New
-                                            Player
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="new_player" required>
+                                            </div>
+                                            <div>
+                                                New Player
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="copy_player" required> Copy
-                                            Player
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="copy_player" required>
+                                            </div>
+                                            <div>
+                                                Copy Player
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="player_list" required> Player
-                                            List
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="player_list" required>
+                                            </div>
+                                            <div>
+                                                Player List
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="edit_member" required> Edit
-                                            Member
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="edit_member" required>
+                                            </div>
+                                            <div>
+                                                Edit Member
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="change_all_status" required>
-                                            Change All Status
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="change_all_status" required>
+                                            </div>
+                                            <div>
+                                                Change All Status
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="unlock_password_lock"
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="unlock_password_lock"
                                                 required>
-                                            Unlock Password Lock
+                                            </div>
+                                            <div>
+                                                Unlock Password Lock
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="adjust_balance" required>
-                                            Adjust
-                                            Balance
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="adjust_balance" required>
+                                            </div>
+                                            <div>
+                                                Adjust Balance
+                                            </div>
                                         </label>
                                     </div>
 
                                     <!-- All Report Permissions -->
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="all_report" required> All
-                                            Report
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="all_report" required>
+                                            </div>
+                                            <div>
+                                                All Report
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="win_lose" required> Win/Lose
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="win_lose" required>
+                                            </div>
+                                            <div>
+                                                Win/Lose
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="win_lose_simple" required>
-                                            Win/Lose Simple
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="win_lose_simple" required>
+                                            </div>
+                                            <div>
+                                                Win/Lose Simple
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="win_lose_by_product"
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="win_lose_by_product"
                                                 required>
-                                            Win/Lose By Product
+                                            </div>
+                                            <div>
+                                                Win/Lose By Product
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="refer_friends_profit"
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="refer_friends_profit"
                                                 required>
-                                            Refer Friends Profit
+                                            </div>
+                                            <div>
+                                                Refer Friends Profit
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="cf_current_bets" required> CF
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="cf_current_bets" required>
+                                            </div>
+                                             CF
                                             Current Bets
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="cf_match_result" required> CF
-                                            Match Result
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="cf_match_result" required>
+                                            </div>
+                                            <div>
+                                                CF Match Result
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="sports_match_report"
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="sports_match_report"
                                                 required>
-                                            Sports Match Report
+                                            </div>
+                                           <div>
+                                                Sports Match Report
+                                           </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="transaction_history"
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="transaction_history"
                                                 required>
-                                            Transaction History
+                                            </div>
+                                            <div>
+                                                Transaction History
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="outstanding" required>
-                                            Outstanding
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="outstanding" required>
+                                            </div>
+                                            <div>
+                                                Outstanding
+                                            </div>
                                         </label>
                                     </div>
 
                                     <!-- Other Permissions -->
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="fund_in_out" required>
-                                            Fund
-                                            In/Out
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="fund_in_out" required>
+                                            </div>
+                                            <div>
+                                                Fund In/Out
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="sports_betting" required>
-                                            Sports
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="sports_betting" required>
+                                            </div>
+                                            <div>
+                                                Sports
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="log_access" required> Log
-                                            Access
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="log_access" required>
+                                            </div>
+                                            <div>
+                                                Log Access
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="campaign_management"
-                                                required> Campaign Management
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="campaign_management"
+                                                required>
+                                            </div>
+                                            <div>
+                                                Campaign Management
+                                            </div>
                                         </label>
                                     </div>
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="refer_friends_program"
-                                                required> Refer Friends Program
+                                        <label class="d-flex gap-2">
+                                            <div>
+                                                <input type="checkbox" name="permissions[]" value="refer_friends_program"
+                                                required>
+                                            </div>
+                                            <div>
+                                                Refer Friends Program
+                                            </div>
                                         </label>
                                     </div>
                                 </div>
