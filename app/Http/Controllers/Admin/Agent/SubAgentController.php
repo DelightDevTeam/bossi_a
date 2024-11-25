@@ -83,6 +83,7 @@ class SubAgentController extends Controller
 
         // Prepare sub-agent data
         $userPrepare = [
+            'name' => $request->input('user_name'),
             'name' => $request->input('name'),
             'password' => Hash::make($request->input('password')),
             'agent_id' => $parentAgent->id, // Reference to the parent agent

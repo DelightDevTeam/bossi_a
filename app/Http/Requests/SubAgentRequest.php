@@ -25,7 +25,7 @@ class SubAgentRequest extends FormRequest
             'user_name' => ['required', 'string', 'unique:users,user_name'],
             'name' => ['required', 'string'],
             'password' => 'required|min:6',
-             'permissions' => 'required|array|min:1', // Ensure at least one checkbox is selected
+            'permissions' => 'required|array|min:1', // Ensure at least one checkbox is selected
             'permissions.*' => 'exists:permissions,title', // Ensure each selected permission exists in the database
         ];
     }
