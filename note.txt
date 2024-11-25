@@ -10,6 +10,7 @@ crontab -e
 
 
 php artisan make:migration add_agent_link_to_users_table --table=users
+php artisan make:migration add_parent_agent_name_to_users_table --table=users
 
 // to add column
 ALTER TABLE transactions
