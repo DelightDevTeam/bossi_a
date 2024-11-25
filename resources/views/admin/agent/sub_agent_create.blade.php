@@ -144,11 +144,11 @@
                             <!-- Permissions Section -->
                             <div class="custom-form-group">
                                 <label for="permissions">Permissions <span class="text-danger">*</span></label>
-                                <div>
+                                <div class="d-flex flex-wrap">
                                     <!-- All Downline Settings -->
                                     <div>
-                                        <label>
-                                            <input type="checkbox" name="permissions[]" value="all_downline" required> All
+                                        <label class="d-flex gap-2">
+                                            <input class="" type="checkbox" name="permissions[]" value="all_downline" required> All
                                             Downline Setting
                                         </label>
                                     </div>
