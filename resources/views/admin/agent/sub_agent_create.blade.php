@@ -461,8 +461,8 @@
                 icon: 'error',
                 title: errorMessage,
                 background: 'hsl(230, 40%, 10%)',
-                showConfirmButton: false,
-                timer: 150000
+                showConfirmButton: true,
+                timer: 1500
             })
         @endif
         function copy() {
