@@ -75,7 +75,7 @@ class SubAgentController extends Controller
     public function store(SubAgentRequest $request): RedirectResponse
     {
         Log::info('Store method invoked.', ['request' => $request->all()]);
-    dd('route matched');
+        //dd('route matched');
         if (! Gate::allows('sub_agent_create')) {
             abort(403);
         }
