@@ -144,7 +144,7 @@
                             <!-- Permissions Section -->
                             <div class="custom-form-group">
                                 <label for="permissions">Permissions <span class="text-danger">*</span></label>
-                                <div class="d-flex flex-wrap">
+                                <div class="d-flex flex-wrap gap-2">
                                     <!-- All Downline Settings -->
                                     <div>
                                         <label class="d-flex gap-2">
