@@ -390,8 +390,9 @@
                             </div>
 
                             <div class="custom-form-group">
-                                <button type="reset" class="btn btn-info">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button class="btn btn-info" type="button" id="resetFormButton">Cancel</button>
+
+                                <button type="submit" class="btn btn-primary" type="button">Submit</button>
                             </div>
                         </form>
                     </div>
