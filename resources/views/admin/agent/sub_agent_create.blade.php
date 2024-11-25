@@ -148,8 +148,12 @@
                                     <!-- All Downline Settings -->
                                     <div>
                                         <label class="d-flex gap-2">
-                                            <input class="" type="checkbox" name="permissions[]" value="all_downline" required> All
-                                            Downline Setting
+                                            <div>
+                                                <input class="" type="checkbox" name="permissions[]" value="all_downline" required>
+                                            </div>
+                                             <div>
+                                                All Downline Setting
+                                             </div>
                                         </label>
                                     </div>
                                     <div>
