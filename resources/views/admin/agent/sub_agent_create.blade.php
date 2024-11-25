@@ -83,7 +83,7 @@
             /* Make space for custom arrow */
         }
         input[type="radio"]:checked {
-            background-color: rgb(231, 0, 197);
+            background-color: rgb(231, 0, 197) !important;
         }
 
 
