@@ -72,7 +72,7 @@ class SubAgentController extends Controller
     }
 
 
-    public function store(SubAgentRequest $request): RedirectResponse
+    public function store(SubAgentRequest $request)
 {
     Log::info('Sub-agent creation initiated.', ['request_data' => $request->all()]);
 
@@ -102,7 +102,7 @@ class SubAgentController extends Controller
 
         // Sync selected permissions
         $selectedPermissions = $request->input('permissions', []);
-        $permissionIds = Permission::whereIn('title', $selectedPermissions)->pluck('id')->toArray();
+        $permissionIds = Permission::whereIn('title', $selectedPermissions)->pluck('id');
         Log::info('Permission IDs retrieved.', ['permission_ids' => $permissionIds]);
 
         $agent->permissions()->sync($permissionIds);
