@@ -7,7 +7,6 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlayerRequest;
 use App\Http\Requests\TransferLogRequest;
-use App\Models\PaymentType;
 use App\Models\User;
 use App\Services\UserService;
 use App\Services\WalletService;
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 
 class PlayerController extends Controller
 {
@@ -36,11 +34,9 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        abort_if(
-            Gate::denies('player_index'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('PlayerList')) {
+            return 403;
+        }
         //kzt
         $users = User::with('roles')
             ->whereHas('roles', function ($query) {
@@ -70,11 +66,10 @@ class PlayerController extends Controller
      */
     public function create()
     {
-        abort_if(
-            Gate::denies('player_create'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('PlayerCreate')) {
+            return 403;
+        }
+
         $player_name = $this->generateRandomString();
 
         return view('admin.player.create', compact('player_name'));
@@ -85,7 +80,9 @@ class PlayerController extends Controller
      */
     public function store(PlayerRequest $request)
     {
-        Gate::allows('player_store');
+        if (!Gate::allows('PlayerStore')) {
+            return 403;
+        }
 
         $agent = Auth::user();
         $inputs = $request->validated();
@@ -120,7 +117,7 @@ class PlayerController extends Controller
                 ->with('password', $request->password)
                 ->with('username', $user->user_name);
         } catch (\Exception $e) {
-            Log::error('Error creating user: '.$e->getMessage());
+            Log::error('Error creating user: ' . $e->getMessage());
 
             return redirect()->back()->with('error', 'An error occurred while creating the player.');
         }
@@ -131,11 +128,6 @@ class PlayerController extends Controller
      */
     public function show(string $id)
     {
-        abort_if(
-            Gate::denies('player_show'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
 
         $user_detail = User::findOrFail($id);
 
@@ -147,12 +139,9 @@ class PlayerController extends Controller
      */
     public function edit(User $player)
     {
-        abort_if(
-            Gate::denies('player_edit'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
+        if (!Gate::allows('PlayerEdit')) {
+            return 403;
+        }
         return response()->view('admin.player.edit', compact('player'));
     }
 
@@ -172,11 +161,9 @@ class PlayerController extends Controller
      */
     public function destroy(User $player)
     {
-        abort_if(
-            Gate::denies('player_delete') || ! $this->ifChildOfParent(request()->user()->id, $player->id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('PlayerDelete')) {
+            return 403;
+        }
         $player->delete();
 
         return redirect()->route('admin.player.index')->with('success', 'User deleted successfully');
@@ -191,40 +178,33 @@ class PlayerController extends Controller
 
     public function banUser($id)
     {
-        abort_if(
-            ! $this->ifChildOfParent(request()->user()->id, $id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('BanPlayer') &&  $this->ifChildOfParent(request()->user()->id, $id)) {
+            abort(403);
+        }
 
         $user = User::find($id);
         $user->update(['status' => $user->status == 1 ? 0 : 1]);
 
         return redirect()->back()->with(
             'success',
-            'User '.($user->status == 1 ? 'activate' : 'inactive').' successfully'
+            'User ' . ($user->status == 1 ? 'activate' : 'inactive') . ' successfully'
         );
     }
 
     public function getCashIn(User $player)
     {
-        abort_if(
-            Gate::denies('make_transfer'),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('Deposit')) {
+            abort(403);
+        }
 
         return view('admin.player.cash_in', compact('player'));
     }
 
     public function makeCashIn(TransferLogRequest $request, User $player)
     {
-        abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $player->id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
-
+        if (!Gate::allows('Deposit')) {
+            abort(403);
+        }
         try {
             $inputs = $request->validated();
             $inputs['refrence_id'] = $this->getRefrenceId();
@@ -249,22 +229,18 @@ class PlayerController extends Controller
 
     public function getCashOut(User $player)
     {
-        abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $player->id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('Withdraw')) {
+            abort(403);
+        }
 
         return view('admin.player.cash_out', compact('player'));
     }
 
     public function makeCashOut(TransferLogRequest $request, User $player)
     {
-        abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $player->id),
-            Response::HTTP_FORBIDDEN,
-            '403 Forbidden |You cannot  Access this page because you do not have permission'
-        );
+        if (!Gate::allows('Withdraw')) {
+            abort(403);
+        }
 
         try {
             $inputs = $request->validated();
@@ -290,6 +266,10 @@ class PlayerController extends Controller
 
     public function getChangePassword($id)
     {
+        if (!Gate::allows('PlayerChangePassword')) {
+            abort(403);
+        }
+
         $player = User::find($id);
 
         return view('admin.player.change_password', compact('player'));
@@ -297,6 +277,9 @@ class PlayerController extends Controller
 
     public function makeChangePassword($id, Request $request)
     {
+        if (!Gate::allows('PlayerChangePassword')) {
+            abort(403);
+        }
         $request->validate([
             'password' => 'required|min:6|confirmed',
         ]);
@@ -316,7 +299,7 @@ class PlayerController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'SBS'.$randomNumber;
+        return 'SBS' . $randomNumber;
     }
 
     private function getRefrenceId($prefix = 'REF')

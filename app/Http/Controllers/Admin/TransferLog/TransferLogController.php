@@ -16,7 +16,7 @@ class TransferLogController extends Controller
 {
     public function index()
     {
-        $this->authorize('transfer_log', User::class);
+        $this->authorize('TransferLog', User::class);
         $transferLogs = Auth::user()->transactions()->with('targetUser')
             ->whereIn('transactions.type', ['withdraw', 'deposit'])
             ->whereIn('transactions.name', ['credit_transfer', 'debit_transfer'])
@@ -28,7 +28,7 @@ class TransferLogController extends Controller
     public function transferLog($id)
     {
         abort_if(
-            Gate::denies('make_transfer') || ! $this->ifChildOfParent(request()->user()->id, $id),
+            Gate::denies('TransferLog') || ! $this->ifChildOfParent(request()->user()->id, $id),
             Response::HTTP_FORBIDDEN,
             '403 Forbidden | You cannot access this page because you do not have permission'
         );

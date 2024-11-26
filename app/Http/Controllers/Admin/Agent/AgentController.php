@@ -34,7 +34,7 @@ class AgentController extends Controller
 
     public function index(): View
     {
-        if (! Gate::allows('agent_index')) {
+        if (! Gate::allows('AgentList')) {
             abort(403);
         }
 
@@ -56,7 +56,7 @@ class AgentController extends Controller
      */
     public function create(): View
     {
-        if (! Gate::allows('agent_create')) {
+        if (! Gate::allows('AgentCreate')) {
             abort(403);
         }
 
@@ -74,7 +74,7 @@ class AgentController extends Controller
      */
     public function store(AgentRequest $request): RedirectResponse
     {
-        if (! Gate::allows('agent_create')) {
+        if (! Gate::allows('AgentCreate')) {
             abort(403);
         }
 
@@ -115,7 +115,7 @@ class AgentController extends Controller
      */
     public function edit(string $id): View
     {
-        if (! Gate::allows('agent_edit')) {
+        if (! Gate::allows('AgentEdit')) {
             abort(403);
         }
 
@@ -130,7 +130,7 @@ class AgentController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-        if (! Gate::allows('agent_edit')) {
+        if (! Gate::allows('AgentEdit')) {
             abort(403);
         }
 
@@ -152,7 +152,7 @@ class AgentController extends Controller
      */
     public function getCashIn(string $id): View
     {
-        if (! Gate::allows('make_transfer')) {
+        if (! Gate::allows('Deposit')) {
             abort(403);
         }
         $agent = User::find($id);
@@ -162,7 +162,7 @@ class AgentController extends Controller
 
     public function getCashOut(string $id): View
     {
-        if (! Gate::allows('make_transfer')) {
+        if (! Gate::allows('Withdraw')) {
             abort(403);
         }
         // Assuming $id is the user ID
@@ -173,7 +173,7 @@ class AgentController extends Controller
 
     public function makeCashIn(TransferLogRequest $request, $id): RedirectResponse
     {
-        if (! Gate::allows('make_transfer')) {
+        if (! Gate::allows('Deposit')) {
             abort(403);
         }
 
@@ -200,7 +200,7 @@ class AgentController extends Controller
 
     public function makeCashOut(TransferLogRequest $request, string $id): RedirectResponse
     {
-        if (! Gate::allows('make_transfer')) {
+        if (! Gate::allows('Withdraw')) {
             abort(403);
         }
 
@@ -254,6 +254,10 @@ class AgentController extends Controller
 
     public function banAgent($id): RedirectResponse
     {
+        if(!Gate::allows('BanAgent'))
+        {
+            abort(403);
+        }
         $user = User::find($id);
         $user->update(['status' => $user->status == 1 ? 0 : 1]);
 
@@ -266,7 +270,7 @@ class AgentController extends Controller
     public function getChangePassword($id)
     {
         abort_if(
-            Gate::denies('agent_change_password_access') || ! $this->ifChildOfParent(request()->user()->id, $id),
+            Gate::denies('AgentChangePassword') || ! $this->ifChildOfParent(request()->user()->id, $id),
             Response::HTTP_FORBIDDEN,
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
@@ -279,7 +283,7 @@ class AgentController extends Controller
     public function makeChangePassword($id, Request $request)
     {
         abort_if(
-            Gate::denies('agent_change_password_access') || ! $this->ifChildOfParent(request()->user()->id, $id),
+            Gate::denies('AgentChangePassword') || ! $this->ifChildOfParent(request()->user()->id, $id),
             Response::HTTP_FORBIDDEN,
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
@@ -364,36 +368,6 @@ class AgentController extends Controller
         return view('admin.agent.agent_to_player_detail', compact('transactionDetails'));
     }
 
-    // public function AgentWinLoseReport()
-    // {
-    //     $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //    // 'reports.agent_commission',  // Select without summing
-    //     'users.name as agent_name',
-    //     //'users.commission as agent_comm',
-
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     //DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //     DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-    //     DB::raw('COUNT(*) as stake_count'),
-    //    // DB::raw('MONTHNAME(reports.created_at) as report_month_name'),  // Adding month name
-    //     DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')  // Adding year and month name
-    // )
-    // ->groupBy('reports.agent_id', 'users.name', 'report_month_year')  // Grouping by year and month
-    // ->get();
-
-    // return view('admin.agent.agent_report_index', compact('agentReports'));
-
-    // }
-
     public function AgentWinLoseReport(Request $request)
     {
         $query = DB::table('reports')
@@ -445,37 +419,6 @@ class AgentController extends Controller
 
         return view('admin.agent.win_lose_details', compact('details'));
     }
-
-    // public function AuthAgentWinLoseReport()
-    // {
-    //     $agentId = Auth::user()->id;  // Get the authenticated user's agent_id
-    //     //dd($agentId); auth_win_lose_details
-
-    //     $agentReports = DB::table('reports')
-    //         ->join('users', 'reports.agent_id', '=', 'users.id')
-    //         ->select(
-    //             'reports.agent_id',
-    //             'reports.agent_commission',  // Select without summing
-    //             'users.name as agent_name',
-    //             'users.commission as agent_comm',
-    //             DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //             DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //             DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //             DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //             DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //             DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //             DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //             //DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //             DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-    //             DB::raw('COUNT(*) as stake_count'),
-    //             DB::raw('DATE_FORMAT(reports.created_at, "%Y %M") as report_month_year')  // Adding year and month name
-    //         )
-    //         ->where('reports.agent_id', $agentId)  // Filter by authenticated user's agent_id
-    //         ->groupBy('reports.agent_id', 'users.name', 'users.commission', 'reports.agent_commission', 'report_month_year')  // Grouping by year and month
-    //         ->get();
-
-    //     return view('admin.agent.auth_agent_report_index', compact('agentReports'));
-    // }
 
     public function AuthAgentWinLoseReport(Request $request)
     {
@@ -532,188 +475,3 @@ class AgentController extends Controller
         return view('admin.agent.auth_win_lose_details', compact('details'));
     }
 }
-
-/*
-agent to player deposit log query
-SELECT
-    agents.id AS agent_id,
-    agents.name AS agent_name,
-    players.id AS player_id,
-    players.name AS player_name,
-    COUNT(transactions.id) AS total_deposits,
-    SUM(transactions.amount) AS total_amount
-FROM
-    transactions
-INNER JOIN
-    users AS players ON players.id = transactions.payable_id
-INNER JOIN
-    users AS agents ON agents.id = players.agent_id
-WHERE
-    transactions.type = 'deposit'
-    AND transactions.name = 'credit_transfer'
-    AND agents.id <> 1 -- Exclude agent_id 1
-GROUP BY
-    agents.id, players.id;
-
-    // agent report comission query
-    SELECT
-    agent_id,
-    MONTH(created_on) as month,
-    YEAR(created_on) as year,
-    SUM(valid_bet_amount) as total_valid_bet_amount,
-    SUM(bet_amount) as total_bet_amount,
-    SUM(payout_amount) as total_payout_amount,
-    SUM(commission_amount) as total_commission_amount,
-    SUM(jack_pot_amount) as total_jack_pot_amount,
-    SUM(jp_bet) as total_jp_bet,
-    SUM(agent_commission) as total_agent_commission
-FROM
-    reports
-GROUP BY
-    agent_id,
-    YEAR(created_on),
-    MONTH(created_on);
-
-    //     $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('MONTH(reports.created_on) as month'),
-    //     DB::raw('YEAR(reports.created_on) as year'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission')
-    // )
-    // ->groupBy('reports.agent_id', 'users.name', DB::raw('YEAR(reports.created_on)'), DB::raw('MONTH(reports.created_on)'))
-    // ->get();
-    // $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission')
-    // )
-    // ->groupBy('reports.agent_id', 'users.name')
-    // ->get();
-
-    // $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //     DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose')
-    // )
-    // ->groupBy('reports.agent_id', 'users.name')
-    // ->get();
-    // return view('admin.agent.agent_report_index', compact('agentReports'));
-
-    //     $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //     DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-    //     DB::raw('COUNT(*) as stake_count')  // Adding stake count here
-    // )
-    // ->groupBy('reports.agent_id', 'users.name')
-    // ->get();
-    // return view('admin.agent.agent_report_index', compact('agentReports'));
-    // $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //     DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-    //     DB::raw('COUNT(*) as stake_count'),
-    //     DB::raw('MONTH(reports.created_at) as report_month')  // Adding month grouping
-    // )
-    // ->groupBy('reports.agent_id', 'users.name', 'report_month')  // Grouping by month
-    // ->get();
-
-    // return view('admin.agent.agent_report_index', compact('agentReports'));
-    //     $agentReports = DB::table('reports')
-    // ->join('users', 'reports.agent_id', '=', 'users.id')
-    // ->select(
-    //     'reports.agent_id',
-    //     'users.name as agent_name',
-    //     DB::raw('COUNT(DISTINCT reports.id) as qty'),
-    //     DB::raw('SUM(reports.bet_amount) as total_bet_amount'),
-    //     DB::raw('SUM(reports.valid_bet_amount) as total_valid_bet_amount'),
-    //     DB::raw('SUM(reports.payout_amount) as total_payout_amount'),
-    //     DB::raw('SUM(reports.commission_amount) as total_commission_amount'),
-    //     DB::raw('SUM(reports.jack_pot_amount) as total_jack_pot_amount'),
-    //     DB::raw('SUM(reports.jp_bet) as total_jp_bet'),
-    //     DB::raw('SUM(reports.agent_commission) as total_agent_commission'),
-    //     DB::raw('(SUM(reports.payout_amount) - SUM(reports.valid_bet_amount)) as win_or_lose'),
-    //     DB::raw('COUNT(*) as stake_count'),
-    //     DB::raw('MONTHNAME(reports.created_at) as report_month_name')  // Adding month name
-    // )
-    // ->groupBy('reports.agent_id', 'users.name', 'report_month_name')  // Grouping by month name
-    // ->get();
-
-    // return view('admin.agent.agent_report_index', compact('agentReports'));
-
-
-    }
-
-
-//     public function AgentToPlayerDepositLog()
-// {
-//     $transactions = DB::table('transactions')
-//         ->join('users as players', 'players.id', '=', 'transactions.payable_id')
-//         ->join('users as agents', 'agents.id', '=', 'players.agent_id')
-//         ->where('transactions.type', 'deposit')
-//         ->where('transactions.name', 'credit_transfer')
-//         ->where('agents.id', '<>', 1) // Exclude agent_id 1
-//         ->groupBy('agents.id', 'players.id')
-//         ->select(
-//             'agents.id as agent_id',
-//             'agents.name as agent_name',
-//             'players.id as player_id',
-//             'players.name as player_name',
-//             DB::raw('count(transactions.id) as total_deposits'),
-//             DB::raw('sum(transactions.amount) as total_amount')
-//         )
-//         ->get();
-
-//     return view('admin.agent.agent_to_play_dep_log', compact('transactions'));
-// }
-
-
-*/

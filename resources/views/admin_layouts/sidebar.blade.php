@@ -28,7 +28,7 @@
                 </a>
             </li>
         @endcan
-        @can('player_index')
+        @can('PlayerList')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.player.index') }}">
                     <span class="sidenav-mini-icon"> <i class="fa-solid fa-user"></i> </span>
@@ -37,7 +37,7 @@
             </li>
         @endcan
 
-        @can('player_index')
+        @can('SubAgentCreate')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.subagent.index') }}">
                     <span class="sidenav-mini-icon"> <i class="fa-solid fa-user"></i> </span>
@@ -68,7 +68,7 @@
                 </a>
             </li>
         @endcan
-        @can('deposit')
+        @can('Deposit')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.agent.deposit') }}">
                     <span class="sidenav-mini-icon"> <i class="fas fa-right-left"></i> </span>
@@ -76,7 +76,7 @@
                 </a>
             </li>
         @endcan
-        @can('withdraw')
+        @can('Withdraw')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.agent.withdraw') }}">
                     <span class="sidenav-mini-icon"> <i class="fas fa-right-left"></i> </span>
