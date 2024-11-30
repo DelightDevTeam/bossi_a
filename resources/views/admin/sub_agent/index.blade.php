@@ -37,14 +37,11 @@
                     <table class="table table-flush" id="users-search">
                         <thead class="thead-light">
                             <th>#</th>
-                            <th>AgentName</th>
-                            <th>AgentID</th>
-                            <th>ReferralCode</th>
+                            <th>Name</th>
+                            <th>SubAgentID</th>
                             <th>Phone</th>
                             <th>Status</th>
-                            <th>Balance</th>
                             <th>Action</th>
-                            <th>Transfer</th>
                         </thead>
                         <tbody>
                             {{-- kzt --}}
@@ -59,15 +56,12 @@
                                             <td>
                                                 <span class="d-block">{{ $user->user_name }}</span>
                                             </td>
-                                            <td>{{ $user->referral_code }}</td>
                                             <td>{{ $user->phone }}</td>
                                             <td>
                                                 <small
                                                     class="badge bg-gradient-{{ $user->status == 1 ? 'success' : 'danger' }}">{{ $user->status == 1 ? 'active' : 'inactive' }}</small>
 
                                             </td>
-                                            <td>{{ number_format($user->balanceFloat) }}</td>
-
                                             <td>
                                                 @if ($user->status == 1)
                                                     <a onclick="event.preventDefault(); document.getElementById('banUser-{{ $user->id }}').submit();"
@@ -84,48 +78,23 @@
                                                             style="font-size: 20px;"></i>
                                                     </a>
                                                 @endif
-                                                <form class="d-none" id="banUser-{{ $user->id }}"
-                                                    action="{{ route('admin.agent.ban', $user->id) }}" method="post">
-                                                    @csrf
-                                                    @method('PUT')
-                                                </form>
-
+                                            
                                                 <a class="me-1"
-                                                    href="{{ route('admin.agent.getChangePassword', $user->id) }}"
+                                                    href="{{ route('admin.subagent.getChangePassword', $user->id) }}"
                                                     data-bs-toggle="tooltip" data-bs-original-title="Change Password">
                                                     <i class="fas fa-lock text-info" style="font-size: 20px;"></i>
                                                 </a>
-                                                <a class="me-1" href="{{ route('admin.agent.edit', $user->id) }}"
+                                                <a class="me-1" href="{{ route('admin.subagent.edit', $user->id) }}"
                                                     data-bs-toggle="tooltip" data-bs-original-title="Edit Agent">
                                                     <i class="fas fa-pen-to-square text-info" style="font-size: 20px;"></i>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('admin.agent.getCashIn', $user->id) }}"
-                                                    data-bs-toggle="tooltip" data-bs-original-title="Deposit To Agent"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fas fa-plus text-white me-1"></i>Dep
-                                                </a>
-                                                <a href="{{ route('admin.agent.getCashOut', $user->id) }}"
-                                                    data-bs-toggle="tooltip" data-bs-original-title="WithDraw To Agent"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fas fa-minus text-white me-1"></i>
-                                                    WDL
                                                 </a>
                                                 <a href="{{ route('admin.logs', $user->id) }}" data-bs-toggle="tooltip"
                                                     data-bs-original-title="Agent logs" class="btn btn-info btn-sm">
                                                     <i class="fas fa-right-left text-white me-1"></i>
                                                     Logs
                                                 </a>
-                                                <a href="{{ route('admin.transferLogDetail', $user->id) }}"
-                                                    data-bs-toggle="tooltip" data-bs-original-title="Reports"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fas fa-right-left text-white me-1"></i>
-                                                    transferLogs
-                                                </a>
-
-
                                             </td>
+                                           
                                         </tr>
                                     @endforeach
                                 @else

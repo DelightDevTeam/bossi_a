@@ -148,7 +148,7 @@
         @endcan
     </div>
     </div>
-    @can('admin_access')
+    <!-- @can('admin_access')
     <div class="row gx-4 mt-4">
         <div class="col-md-6">
             <div class="card">
@@ -171,7 +171,7 @@
                 </form>
             </div>
     </div>
-    @endcan
+    @endcan -->
 </div>
 @endsection
 @section('scripts')

@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends Controller
@@ -39,7 +41,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
         $isAdmin = $user->hasRole('Admin');
         $getUserCounts = $this->getUserCounts($isAdmin, $user);
         $agent_count = $getUserCounts('Agent');
@@ -48,7 +50,6 @@ class HomeController extends Controller
         $totalWithdraw = $this->getTotalWithdraw();
         $todayDeposit = $this->getTodayDeposit();
         $todayWithdraw = $this->getTodayWithdraw();
-
         return view('admin.dashboard', compact(
             'agent_count',
             'player_count',
@@ -151,7 +152,7 @@ class HomeController extends Controller
     {
         return function ($roleTitle) use ($isAdmin, $user) {
             return User::whereHas('roles', function ($query) use ($roleTitle) {
-                $query->where('title', '=', $roleTitle);
+                $query->where('name', '=', $roleTitle);
             })->when(! $isAdmin, function ($query) use ($user) {
                 $query->where('agent_id', $user->id);
             })->count();

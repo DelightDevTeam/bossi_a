@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin\Permission;
-use App\Models\Admin\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionRoleTableSeeder extends Seeder
 {
@@ -14,8 +14,7 @@ class PermissionRoleTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin permissions
-        $admin_permissions = Permission::whereIn('name', [
+        Role::find(1)->syncPermissions([
             'admin_access',
             'agent_access',
             'AgentList',
@@ -26,19 +25,11 @@ class PermissionRoleTableSeeder extends Seeder
             'TransferLog',
             'Deposit',
             'Withdraw',
-            'GameTypeAccess',
-            'Player W/L Report',
-            'BanAgent',
+            'PlayerReport',
+            'AgentReport',
+            'BanAgent'
         ]);
-        Role::findOrFail(1)->permissions()->sync($admin_permissions->pluck('id'));
-
-        $agent_permissions = Permission::whereIn('name', [
-            'agent_access',
-            'agent_index',
-            'agent_create',
-            'agent_edit',
-            'agent_delete',
-            'AgentChangePassword',
+        Role::find(2)->syncPermissions([
             'PlayerList',
             'PlayerCreate',
             'PlayerEdit',
@@ -46,17 +37,12 @@ class PermissionRoleTableSeeder extends Seeder
             'TransferLog',
             'Deposit',
             'Withdraw',
-            'deposit',
-            'Bank',   
+            'Bank',
             'BanAgent',
             'BanPlayer',
-            'Player W/L Report',
-            'Agent W/L Report'     ,
-            'SubAgentCreate'   ,
+            'PlayerReport',
+            'SubAgentCreate',
             'PlayerChangePassword'
-
-        ])->pluck('id');
-
-        Role::findOrFail(2)->permissions()->sync($agent_permissions);
+        ]);
     }
 }

@@ -11,12 +11,13 @@ use App\Models\User;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
-
+use Spatie\Permission\Models\Permission as ModelsPermission;
 
 class SubAgentController extends Controller
 {
@@ -36,7 +37,7 @@ class SubAgentController extends Controller
             ->where('agent_id', auth()->id())
             ->orderBy('id', 'desc')
             ->get();
-            dd($users);
+
         //kzt
         return view('admin.sub_agent.index', compact('users'));
     }
@@ -49,7 +50,8 @@ class SubAgentController extends Controller
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
         $agent_name = $this->generateRandomString();
-        $permissions = Permission::whereNotIn('title', ['admin_access', 'agent_access', 'player_access', 'PlayerCreate' ,'SubAgentCreate'])->get();
+
+        $permissions = ModelsPermission::whereNotIn('name', ['admin_access', 'agent_access', 'player_access', 'SubAgentCreate', 'AgentCreate', 'AgentEdit', 'AgentList', 'AgentDelete', 'BanAgent', 'AgentReport' , 'AgentChangePassword'])->get();
 
         return view('admin.sub_agent.create', compact('agent_name', 'permissions'));
     }
@@ -64,7 +66,7 @@ class SubAgentController extends Controller
 
     public function store(SubAgentRequest $request): RedirectResponse
     {
-        try{
+        try {
             $userPrepare = [
                 'user_name' => $request->user_name,
                 'name' => $request->name,
@@ -73,24 +75,70 @@ class SubAgentController extends Controller
                 'agent_id' => Auth::id(),
                 'type' => UserType::SubAgent,
             ];
-    
+
             $agent = User::create($userPrepare);
-            
-            $agent->syncPermissions([
-                "AgentEdit",
-                "AgentDelete",
-                "Player W/L Report",
-                "Agent W/L Report"
-            ]);
-    
+
+            $agent->syncPermissions($request->permissions);
+            $agent->assignRole(self::SUB_AGENT_ROLE);
+
             return redirect()->route('admin.subagent.index')
                 ->with('success', 'Sub-agent created successfully!');
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
 
             return redirect()->route('admin.subagent.index')
                 ->with('error', 'Sub-agent created successfully!');
         }
+    }
 
+    public function edit($id)
+    {
+        $agent = User::find($id);
+        $agentPermissions = $agent->permissions->pluck('name')->toArray();
+
+        $permissions = ModelsPermission::whereNotIn('name', ['admin_access', 'agent_access', 'player_access', 'SubAgentCreate', 'AgentCreate', 'AgentEdit', 'AgentList', 'AgentDelete', 'BanAgent', 'AgentChangePassword', 'AgentReport'])->get();
+
+        return view('admin.sub_agent.edit', compact('agent', 'permissions', 'agentPermissions'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+        ]);
+        $user->syncPermissions($request->permissions);
+
+        return redirect()->route('admin.subagent.index')
+            ->with('success', 'Sub-agent created successfully!');
+    }
+
+    public function show($id)
+    {
+
+    }
+
+    public function getChangePassword($id)
+    {
+        $agent = User::find($id);
+      
+        return view('admin.sub_agent.change_password', compact('agent'));
+    }
+
+    public function makeChangePassword($id, Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $agent = User::find($id);
+        $agent->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Agent Change Password successfully')
+            ->with('password', $request->password)
+            ->with('username', $agent->user_name);
     }
 }

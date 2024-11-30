@@ -9,8 +9,8 @@
                     <span class="sidenav-normal ms-2 ps-1">Admin Dashboard</span>
                 @elseif(Auth::user()->hasRole('Agent'))
                     <span class="sidenav-normal ms-2 ps-1">Agent Dashboard</span>
-                @elseif(Auth::user()->hasRole('Player'))
-                    <span class="sidenav-normal ms-2 ps-1">Player Dashboard</span>
+                @elseif(Auth::user()->hasRole('SubAgent'))
+                    <span class="sidenav-normal ms-2 ps-1">SubAgent Dashboard</span>
                 @endif
             </a>
         </li>
@@ -20,7 +20,7 @@
                 <span class="sidenav-normal  ms-2  ps-1"> Profile </span>
             </a>
         </li>
-        @can('admin_access')
+        @can('AgentList')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.agent.index') }}">
                     <span class="sidenav-mini-icon"> <i class="fa-solid fa-user"></i> </span>
@@ -54,12 +54,14 @@
                 </a>
             </li>
         @endcan
+        @can('TransferLog')
         <li class="nav-item">
             <a class="nav-link text-white " href="{{ route('admin.transferLog') }}">
                 <span class="sidenav-mini-icon"> <i class="fas fa-right-left"></i> </span>
                 <span class="sidenav-normal  ms-2  ps-1">Transfer Log</span>
             </a>
         </li>
+        @endcan
         @can('bank')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.bank.index') }}">

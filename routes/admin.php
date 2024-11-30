@@ -86,6 +86,8 @@ Route::group([
     // game list end
     Route::resource('agent', AgentController::class);
     Route::resource('subagent', SubAgentController::class);
+    Route::get('subagent-changepassword/{id}', [SubAgentController::class, 'getChangePassword'])->name('subagent.getChangePassword');
+    Route::post('subagent-changepassword/{id}', [SubAgentController::class, 'makeChangePassword'])->name('subagent.makeChangePassword');
 
     Route::get('agent-cash-in/{id}', [AgentController::class, 'getCashIn'])->name('agent.getCashIn');
     Route::post('agent-cash-in/{id}', [AgentController::class, 'makeCashIn'])->name('agent.makeCashIn');

@@ -2,9 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Services\ApiService;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,8 +27,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(PermissionRegistrar $permissionRegistrar): void
     {
-        Schema::defaultStringLength(191);
+        Permission::get()->each(function ($permission) {
+            Log::info('Permission Loaded: ' . $permission->name);
+        });
+
     }
 }

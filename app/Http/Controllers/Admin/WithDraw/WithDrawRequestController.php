@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\Auth;
 
 class WithDrawRequestController extends Controller
 {
+    private const SUB_AGENT_ROLE = 3;
+
     public function index(Request $request)
     {
+        $agent = $this->getAgent() ?? Auth::user();
+
         $withdraws = WithDrawRequest::where('agent_id', Auth::id())
             ->when($request->filled('status') && $request->input('status') !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->input('status'));
@@ -66,5 +70,17 @@ class WithDrawRequestController extends Controller
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    private function isExistingAgent($userId)
+    {
+        $user = User::find($userId);
+    
+        return $user && $user->hasRole(self::SUB_AGENT_ROLE) ? $user->parent : null;
+    }
+    
+    private function getAgent()
+    {
+        return $this->isExistingAgent(Auth::id());
     }
 }

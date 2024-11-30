@@ -63,6 +63,7 @@
               <td>{{number_format($user->balanceFloat) }}</td>
                 <td>{{ $user->created_at->setTimezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
               <td>
+                @can('banPlayer')
                 @if ($user->status == 1)
                 <a onclick="event.preventDefault(); document.getElementById('banUser-{{ $user->id }}').submit();" class="me-2" href="#" data-bs-toggle="tooltip" data-bs-original-title="Active Player">
                   <i class="fas fa-user-check text-success" style="font-size: 20px;"></i>
@@ -76,35 +77,47 @@
                   @csrf
                   @method('PUT')
                 </form>
+                @endcan
+                @can('PlayerChangePassword')
                 <a class="me-1" href="{{ route('admin.player.getChangePassword', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Change Password">
                   <i class="fas fa-lock text-info" style="font-size: 20px;"></i>
                 </a>
+                @endcan
+                @can('PlayerEdit')
                 <a class="me-1" href="{{ route('admin.player.edit', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Edit Player">
                   <i class="fas fa-pen-to-square text-info" style="font-size: 20px;"></i>
                 </a>
-
+                @endcan
               </td>
               <td>
+                @can('Deposit')
                 <a href="{{ route('admin.player.getCashIn', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Deposit To Player" class="btn btn-info btn-sm">
                   <i class="fas fa-plus text-white me-1"></i>
                   Dep
                 </a>
+                @endcan
+                @can('Withdraw')
                 <a href="{{ route('admin.player.getCashOut', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="WithDraw To Player" class="btn btn-info btn-sm">
                 <i class="fas fa-minus text-white me-1"></i>
                   WDL
                 </a>
+                @endcan
+                @can('Player W/L Report')
                 <a href="{{ route('admin.report.view', $user->user_name) }}" data-bs-toggle="tooltip" data-bs-original-title="Reports" class="btn btn-info btn-sm">
                   <i class="fas fa-line-chart text-white me-1"></i>
                   Reports
                 </a>
+                @endcan
                 <a href="{{ route('admin.logs', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Reports" class="btn btn-info btn-sm">
                   <i class="fas fa-right-left text-white me-1"></i>
                   Logs
                 </a>
+                @can('TransferLog')
                 <a href="{{ route('admin.transferLogDetail', $user->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Reports" class="btn btn-info btn-sm">
                   <i class="fas fa-right-left text-white me-1"></i>
                   transferLogs
                 </a>
+                @endcan
           </td>
             </tr>
             @endforeach

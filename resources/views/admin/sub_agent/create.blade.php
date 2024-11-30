@@ -138,7 +138,7 @@
                         <div class="custom-form-group">
                             <label for="name">Phone<span class="text-danger">*</span></label>
                             <input type="text" name="phone" class="form-control" value="{{ old('phone') }}"
-                                placeholder="Enter Agent Name">
+                                placeholder="Enter Phone">
                             @error('phone')
                             <span class="text-danger d-block">*{{ $message }}</span>
                             @enderror
@@ -163,10 +163,10 @@
                                     <label class="d-flex gap-2">
                                         <div>
                                             <input class="" type="checkbox" name="permissions[]"
-                                                value="{{$permission->title}}">
+                                                value="{{$permission->name}}">
                                         </div>
                                         <div>
-                                            {{$permission->title}}
+                                            {{$permission->name}}
                                         </div>
                                     </label>
                                 </div>

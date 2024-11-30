@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin\Role;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class RolesTableSeeder extends Seeder
 {
@@ -16,41 +16,31 @@ class RolesTableSeeder extends Seeder
             [
 
                 'name' => 'Admin',
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
 
                 'name' => 'Agent',
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
 
                 'name' => 'SubAgent',
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
 
                 'name' => 'Player',
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
 
                 'name' => 'SystemWallet',
-                'guard_name' => 'web',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
 
         ];
 
-        Role::insert($roles);
+        foreach($roles as $role)
+        {
+            Role::create([
+                'name' => $role['name']
+            ]);
+        }
     }
 }

@@ -24,6 +24,7 @@ class PlayerController extends Controller
 
     private const PLAYER_ROLE = 4;
 
+    private const SUB_AGENT_ROLE = 3;
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
@@ -37,12 +38,13 @@ class PlayerController extends Controller
         if (!Gate::allows('PlayerList')) {
             return 403;
         }
-        //kzt
+        $agent = $this->getAgent() ?? Auth::user();
+
         $users = User::with('roles')
             ->whereHas('roles', function ($query) {
                 $query->where('role_id', self::PLAYER_ROLE);
             })
-            ->where('agent_id', auth()->id())
+            ->where('agent_id', $agent->id)
             ->orderBy('id', 'desc')
             ->get();
 
@@ -80,16 +82,13 @@ class PlayerController extends Controller
      */
     public function store(PlayerRequest $request)
     {
-        if (!Gate::allows('PlayerStore')) {
+        if (!Gate::allows('PlayerCreate')) {
             return 403;
         }
 
-        $agent = Auth::user();
+        $agent = $this->getAgent() ?? Auth::user();
+        
         $inputs = $request->validated();
-
-        if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
-            return redirect()->back()->with('error', 'This phone number already exists');
-        }
 
         try {
             if (isset($inputs['amount']) && $inputs['amount'] > $agent->balanceFloat) {
@@ -209,7 +208,8 @@ class PlayerController extends Controller
             $inputs = $request->validated();
             $inputs['refrence_id'] = $this->getRefrenceId();
 
-            $agent = Auth::user();
+            $agent = $this->getAgent() ?? Auth::user();
+
             $cashIn = $inputs['amount'];
 
             if ($cashIn > $agent->balanceFloat) {
@@ -246,7 +246,7 @@ class PlayerController extends Controller
             $inputs = $request->validated();
             $inputs['refrence_id'] = $this->getRefrenceId();
 
-            $agent = Auth::user();
+            $agent = $this->getAgent() ?? Auth::user();
             $cashOut = $inputs['amount'];
 
             if ($cashOut > $player->balanceFloat) {
@@ -314,9 +314,15 @@ class PlayerController extends Controller
         return view('players.index', compact('players'));
     }
 
-    private function isExistingUserForAgent($phone, $agent_id): bool
+    private function isExistingAgent($userId)
     {
-        //return User::where('phone', $phone)->where('agent_id', $agent_id)->first();
-        return User::where('phone', $phone)->where('agent_id', $agent_id)->exists();
+        $user = User::find($userId);
+    
+        return $user && $user->hasRole(self::SUB_AGENT_ROLE) ? $user->parent : null;
+    }
+    
+    private function getAgent()
+    {
+        return $this->isExistingAgent(Auth::id());
     }
 }

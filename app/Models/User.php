@@ -5,25 +5,23 @@ namespace App\Models;
 use App\Enums\UserType;
 use App\Events\UserCreatedEvent;
 use App\Models\Admin\Bank;
-use App\Models\Admin\Permission;
-use App\Models\Admin\Role;
 use App\Models\Report;
 use App\Models\SeamlessTransaction;
 use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWalletFloat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Wallet
 {
-    use HasApiTokens, HasFactory, HasWalletFloat, Notifiable;
+    use HasApiTokens, HasFactory, HasWalletFloat, Notifiable, HasRoles;
 
     private const PLAYER_ROLE = 4;
 
@@ -76,44 +74,9 @@ class User extends Authenticatable implements Wallet
         'type' => UserType::class,
     ];
 
-    public function getIsAdminAttribute()
-    {
-        return $this->roles()->where('id', 1)->exists();
-    }
-
-    public function getIsMasterAttribute()
-    {
-        return $this->roles()->where('id', 2)->exists();
-    }
-
-    public function getIsAgentAttribute()
-    {
-        return $this->roles()->where('id', 3)->exists();
-    }
-
-    public function getIsUserAttribute()
-    {
-        return $this->roles()->where('id', 4)->exists();
-    }
-
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class);
-    }
-
-    public function hasRole($role)
-    {
-        return $this->roles->contains('title', $role);
-    }
-
     public function hasPermission($permission)
     {
-        return $this->roles->flatMap->permissions->pluck('title')->contains($permission);
+        return $this->roles->flatMap->permissions->pluck('name')->contains($permission);
     }
 
     public function user()
