@@ -118,8 +118,10 @@ class User extends Authenticatable implements Wallet
 
     public function scopeRoleLimited($query)
     {
+        $agent = $this->getAgent() ?? Auth::user();
+
         if (! Auth::user()->hasRole('Admin')) {
-            return $query->where('users.agent_id', Auth::id());
+            return $query->where('users.agent_id', $agent->id);
         }
 
         return $query;
@@ -160,4 +162,17 @@ class User extends Authenticatable implements Wallet
     {
         return $this->morphMany(Transaction::class, 'payable');
     }
+
+    private function isExistingAgent($userId)
+    {
+        $user = User::find($userId);
+    
+        return $user && $user->hasRole(3) ? $user->parent : null;
+    }
+    
+    private function getAgent()
+    {
+        return $this->isExistingAgent(Auth::id());
+    }
+    
 }
