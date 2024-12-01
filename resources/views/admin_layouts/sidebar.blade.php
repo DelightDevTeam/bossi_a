@@ -62,7 +62,7 @@
             </a>
         </li>
         @endcan
-        @can('bank')
+        @can('Bank')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('admin.bank.index') }}">
                     <span class="sidenav-mini-icon"> <i class="fas fa-right-left"></i> </span>

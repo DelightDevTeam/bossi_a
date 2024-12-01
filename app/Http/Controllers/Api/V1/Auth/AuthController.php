@@ -38,8 +38,8 @@ class AuthController extends Controller
             return $this->error('', 'Your account is not activated!', 401);
         }
 
-        if ($user->is_changed_password == 0) {
-            return $this->error($user, 'You have to change password', 200);
+        if (!$user->hasRole('Player')) {
+            return $this->error('', 'You do not have permission', 200);
         }
 
         UserLog::create([
