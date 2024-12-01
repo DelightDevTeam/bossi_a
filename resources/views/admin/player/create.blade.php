@@ -209,7 +209,7 @@
   </tr>
   <tr>
     <td>Phone</td>
-    <td id="tusername"> ${phone}</td>
+    <td id="tphone"> ${phone}</td>
   </tr>
   <tr>
     <td>Password</td>
@@ -233,9 +233,9 @@
             })
         @endif
         function copy() {
-            var username = $('#tusername').text();
+            var phone = $('#tphone').text();
             var password = $('#tpassword').text();
-            var copy = "url : " + url + "\nusername : " + username + "\npw : " + password;
+            var copy = "url : " + url + "\nphone : " + username + "\npw : " + password;
             copyToClipboard(copy)
         }
 
