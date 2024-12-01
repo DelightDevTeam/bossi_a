@@ -235,7 +235,7 @@
         function copy() {
             var phone = $('#tphone').text();
             var password = $('#tpassword').text();
-            var copy = "url : " + url + "\nphone : " + username + "\npw : " + password;
+            var copy = "url : " + url + "\nphone : " + phone + "\npw : " + password;
             copyToClipboard(copy)
         }
 
