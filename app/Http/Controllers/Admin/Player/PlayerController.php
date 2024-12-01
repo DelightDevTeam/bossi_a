@@ -114,7 +114,7 @@ class PlayerController extends Controller
                 ->with('success', 'Player created successfully')
                 ->with('url', env('APP_URL'))
                 ->with('password', $request->password)
-                ->with('username', $user->user_name);
+                ->with('phone', $user->phone);
         } catch (\Exception $e) {
             Log::error('Error creating user: ' . $e->getMessage());
 

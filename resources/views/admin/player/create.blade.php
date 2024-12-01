@@ -190,7 +190,7 @@
         var errorMessage = @json(session('error'));
         var successMessage = @json(session('success'));
         var url = 'https://bossi.pro';
-        var name = @json(session('username'));
+        var phone = @json(session('phone'));
         var pw = @json(session('password'));
 
         @if (session()->has('success'))
@@ -209,7 +209,7 @@
   </tr>
   <tr>
     <td>Username</td>
-    <td id="tusername"> ${name}</td>
+    <td id="tusername"> ${phone}</td>
   </tr>
   <tr>
     <td>Password</td>
