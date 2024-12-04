@@ -19,7 +19,7 @@ class WithDrawRequestController extends Controller
     {
         $agent = $this->getAgent() ?? Auth::user();
 
-        $withdraws = WithDrawRequest::where('agent_id', Auth::id())
+        $withdraws = WithDrawRequest::where('agent_id', $agent->id)
             ->when($request->filled('status') && $request->input('status') !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->input('status'));
             })
@@ -31,11 +31,9 @@ class WithDrawRequestController extends Controller
 
     public function statusChangeIndex(Request $request, WithDrawRequest $withdraw)
     {
-        // dd('here');
         try {
-            $agent = Auth::user();
+            $agent = $this->getAgent() ?? Auth::user();
             $player = User::find($request->player);
-            // dd('here');
 
             if ($request->status == 1 && $player->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'Player do not have enough balance!');
@@ -75,10 +73,10 @@ class WithDrawRequestController extends Controller
     private function isExistingAgent($userId)
     {
         $user = User::find($userId);
-    
+
         return $user && $user->hasRole(self::SUB_AGENT_ROLE) ? $user->parent : null;
     }
-    
+
     private function getAgent()
     {
         return $this->isExistingAgent(Auth::id());

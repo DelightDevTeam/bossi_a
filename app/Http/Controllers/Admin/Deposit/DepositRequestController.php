@@ -34,9 +34,9 @@ class DepositRequestController extends Controller
     public function statusChangeIndex(Request $request, DepositRequest $deposit)
     {
         try {
-            $agent = Auth::user();
             $player = User::find($request->player);
-
+            $agent = $this->getAgent() ?? Auth::user();
+            dd($agent);
             if ($request->status == 1 && $agent->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'You do not have enough balance to transfer!');
             }

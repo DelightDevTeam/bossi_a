@@ -24,7 +24,6 @@ class SubAgentRequest extends FormRequest
         return [
             'user_name' => ['required', 'string', 'unique:users,user_name'],
             'name' => ['required', 'string'],
-            'phone' => ['required', 'regex:/^[0-9]+$/', 'unique:users,phone'],
             'password' => 'required|min:6',
             'permissions' => ['required', 'array', 'min:1'],
         ];

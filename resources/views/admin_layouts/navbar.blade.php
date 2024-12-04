@@ -52,7 +52,11 @@
         </li>
         <li class="nav-item px-3">
             <p class="font-weight-bolder mb-0">Balance :
-                <span>{{number_format(\Illuminate\Support\Facades\Auth::user()->balanceFloat)}} </span>
+            @if(Auth::user()->hasRole('SubAgent'))
+                <span>{{number_format(\Illuminate\Support\Facades\Auth::user()->parent->balanceFloat)}} </span>
+              @else
+              <span>{{number_format(\Illuminate\Support\Facades\Auth::user()->balanceFloat)}} </span>
+              @endif
             </p>
         </li>
 

@@ -11,7 +11,11 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Balance</p>
+                        @if(Auth::user()->hasRole('SubAgent'))
+                        <h4 class="mb-0">{{ number_format(auth()->user()->parent->balanceFloat) }}</h4>
+                        @else
                         <h4 class="mb-0">{{ number_format(auth()->user()->balanceFloat) }}</h4>
+                        @endif
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
